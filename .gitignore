@@ -1,0 +1,22 @@
+__pycache__/
+*.pyc
+.pytest_cache/
+__MACOSX/
+._*
+.DS_Store
+
+# Salidas de experimentos: reproducibles desde los scripts, no versionadas
+experiments/output/
+
+# Compilacion de LaTeX
+manuscript/*.aux
+manuscript/*.bbl
+manuscript/*.blg
+manuscript/*.log
+manuscript/*.out
+manuscript/*.synctex.gz
+manuscript/*.fls
+manuscript/*.fdb_latexmk
+
+.venv/
+venv/
