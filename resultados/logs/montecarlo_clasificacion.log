@@ -1,0 +1,75 @@
+Monte Carlo de clasificacion: 1000 replicas, n=[24, 36, 48, 120], semilla=20260824
+  [1/32] ruido blanco           n=24   tendencia 95.3% correcto | estacionalidad no evaluable
+  [2/32] ruido blanco           n=36   tendencia 93.9% correcto | estacionalidad 98.4% correcto
+  [3/32] ruido blanco           n=48   tendencia 94.0% correcto | estacionalidad 97.2% correcto
+  [4/32] ruido blanco           n=120  tendencia 92.7% correcto | estacionalidad 99.5% correcto
+  [5/32] AR(1) phi=0.7          n=24   tendencia 93.9% correcto | estacionalidad no evaluable
+  [6/32] AR(1) phi=0.7          n=36   tendencia 91.3% correcto | estacionalidad 97.4% correcto
+  [7/32] AR(1) phi=0.7          n=48   tendencia 89.0% correcto | estacionalidad 96.5% correcto
+  [8/32] AR(1) phi=0.7          n=120  tendencia 90.4% correcto | estacionalidad 99.5% correcto
+  [9/32] paseo aleatorio        n=24   tendencia 84.2% correcto | estacionalidad no evaluable
+  [10/32] paseo aleatorio        n=36   tendencia 86.5% correcto | estacionalidad 98.4% correcto
+  [11/32] paseo aleatorio        n=48   tendencia 84.7% correcto | estacionalidad 99.4% correcto
+  [12/32] paseo aleatorio        n=120  tendencia 88.3% correcto | estacionalidad 100.0% correcto
+  [13/32] tendencia lineal       n=24   tendencia 42.7% correcto | estacionalidad no evaluable
+  [14/32] tendencia lineal       n=36   tendencia 91.4% correcto | estacionalidad 98.2% correcto
+  [15/32] tendencia lineal       n=48   tendencia 99.4% correcto | estacionalidad 97.8% correcto
+  [16/32] tendencia lineal       n=120  tendencia 100.0% correcto | estacionalidad 99.7% correcto
+  [17/32] tendencia limpia       n=24   tendencia 99.5% correcto | estacionalidad no evaluable
+  [18/32] tendencia limpia       n=36   tendencia 100.0% correcto | estacionalidad 97.9% correcto
+  [19/32] tendencia limpia       n=48   tendencia 100.0% correcto | estacionalidad 98.3% correcto
+  [20/32] tendencia limpia       n=120  tendencia 100.0% correcto | estacionalidad 99.4% correcto
+  [21/32] paseo con deriva       n=24   tendencia 44.2% correcto | estacionalidad no evaluable
+  [22/32] paseo con deriva       n=36   tendencia 55.3% correcto | estacionalidad 98.5% correcto
+  [23/32] paseo con deriva       n=48   tendencia 70.3% correcto | estacionalidad 99.3% correcto
+  [24/32] paseo con deriva       n=120  tendencia 95.7% correcto | estacionalidad 100.0% correcto
+  [25/32] estacional pura        n=24   tendencia 99.9% correcto | estacionalidad no evaluable
+  [26/32] estacional pura        n=36   tendencia 89.1% correcto | estacionalidad 100.0% correcto
+  [27/32] estacional pura        n=48   tendencia 90.8% correcto | estacionalidad 100.0% correcto
+  [28/32] estacional pura        n=120  tendencia 93.5% correcto | estacionalidad 100.0% correcto
+  [29/32] tendencia+estacion.    n=24   tendencia  0.0% correcto | estacionalidad no evaluable
+  [30/32] tendencia+estacion.    n=36   tendencia 80.8% correcto | estacionalidad 100.0% correcto
+  [31/32] tendencia+estacion.    n=48   tendencia 88.5% correcto | estacionalidad 100.0% correcto
+  [32/32] tendencia+estacion.    n=120  tendencia 100.0% correcto | estacionalidad 100.0% correcto
+
+====================================================================================
+TASAS DE ERROR DE LA CLASIFICACION (objetivo: ~5% donde la verdad es 'No')
+====================================================================================
+
+--- TENDENCIA ---
+  AR(1) phi=0.7          verdad=No    falso POSITIVO       6.1%      8.7%     11.0%      9.6%
+  estacional pura        verdad=No    falso POSITIVO       0.1%     10.9%      9.2%      6.5%
+  paseo aleatorio        verdad=No    falso POSITIVO      15.8%     13.5%     15.3%     11.7%
+  paseo con deriva       verdad=Si    falso negativo      55.8%     44.7%     29.7%      4.3%
+  ruido blanco           verdad=No    falso POSITIVO       4.7%      6.1%      6.0%      7.3%
+  tendencia limpia       verdad=Si    falso negativo       0.5%      0.0%      0.0%      0.0%
+  tendencia lineal       verdad=Si    falso negativo      57.3%      8.6%      0.6%      0.0%
+  tendencia+estacion.    verdad=Si    falso negativo     100.0%     19.2%     11.5%      0.0%
+                         n =                          24        36        48       120
+
+--- ESTACIONALIDAD ---
+  AR(1) phi=0.7          verdad=No    falso POSITIVO       2.6%      3.5%      0.5%
+  estacional pura        verdad=Si    falso negativo       0.0%      0.0%      0.0%
+  paseo aleatorio        verdad=No    falso POSITIVO       1.6%      0.6%      0.0%
+  paseo con deriva       verdad=No    falso POSITIVO       1.5%      0.7%      0.0%
+  ruido blanco           verdad=No    falso POSITIVO       1.6%      2.8%      0.5%
+  tendencia limpia       verdad=No    falso POSITIVO       2.1%      1.7%      0.6%
+  tendencia lineal       verdad=No    falso POSITIVO       1.8%      2.2%      0.3%
+  tendencia+estacion.    verdad=Si    falso negativo       0.0%      0.0%      0.0%
+                         n =                          36        48       120
+
+  n/e = no evaluable: la serie no tiene los 3 ciclos completos que exige
+        la identificacion de estacionalidad. Es una respuesta valida, no un error.
+
+------------------------------------------------------------------------------------
+RESUMEN
+  Falsos positivos de TENDENCIA      : media 8.9%  maximo 15.8%   [codigo original: 74.4%]
+  Falsos positivos de ESTACIONALIDAD : media 1.4%  maximo 3.5%   [codigo original: 50.2%]
+  Potencia de ESTACIONALIDAD (donde es evaluable): media 100.0%
+
+  ACEPTACION FASE 1: PASA
+    criterio: falsos positivos de tendencia <= 20% (limitado por la
+              distorsion de tamano del ADF con n=24) y de estacionalidad <= 10%.
+------------------------------------------------------------------------------------
+
+CSV: C:\Users\LENOVO\OneDrive - uniminuto.edu\UNIANDES Research Projects\RESEARCH INVITADOS PROFE LUIS-DAVID\Forecasting\experiments\output\montecarlo_clasificacion.csv

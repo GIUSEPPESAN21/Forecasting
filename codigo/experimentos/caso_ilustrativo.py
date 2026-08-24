@@ -100,7 +100,7 @@ def main() -> int:
     for w in pol.warnings:
         print("  AVISO:", w)
 
-    out = Path(__file__).resolve().parent / "output"
+    out = Path(__file__).resolve().parents[2] / "resultados"
     out.mkdir(parents=True, exist_ok=True)
     tabla.to_csv(out / "caso_ilustrativo_pronostico.csv", encoding="utf-8-sig")
     result.evaluation.ranked[cols].round(3).to_csv(

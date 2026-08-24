@@ -1,0 +1,59 @@
+Descargando/leyendo M3 mensual (datasetsforecast)...
+Series M3 mensuales truncadas a las ultimas 48 obs (min. nativo 24): 1428 disponibles
+Muestra evaluada: 150 series (semilla 20260824)
+  [25/150] procesadas (25 ok)
+  [50/150] procesadas (50 ok)
+  [75/150] procesadas (75 ok)
+  [100/150] procesadas (100 ok)
+  [125/150] procesadas (125 ok)
+  [150/150] procesadas (150 ok)
+
+Procesadas: 150 | ok: 150 | fallidas/sin ganador: 0
+
+========================================================================================
+DISTRIBUCION DE MASE POR REGIMEN ESTRUCTURAL (150 series)
+========================================================================================
+
+  estacional_con_tendencia (n=21)
+    mase_naive             mediana=1.125  media=1.237  q25=0.886  q75=1.524
+    mase_seasonal_naive    mediana=1.086  media=1.156  q25=0.688  q75=1.275
+    mase_ganador           mediana=0.719  media=0.807  q25=0.519  q75=0.874
+    la herramienta supera al naive en 81% de las series
+
+  estacional_plano (n=31)
+    mase_naive             mediana=0.962  media=1.480  q25=0.699  q75=1.701
+    mase_seasonal_naive    mediana=0.916  media=1.053  q25=0.597  q75=1.334
+    mase_ganador           mediana=0.665  media=0.738  q25=0.430  q75=0.942
+    la herramienta supera al naive en 97% de las series
+
+  no_estacional_con_tendencia (n=42)
+    mase_naive             mediana=0.702  media=0.775  q25=0.515  q75=1.029
+    mase_seasonal_naive    mediana=1.247  media=2.716  q25=0.820  q75=4.051
+    mase_ganador           mediana=0.634  media=0.714  q25=0.517  q75=0.926
+    la herramienta supera al naive en 69% de las series
+
+  no_estacional_plano (n=56)
+    mase_naive             mediana=0.722  media=0.782  q25=0.581  q75=0.926
+    mase_seasonal_naive    mediana=1.567  media=2.122  q25=0.904  q75=3.060
+    mase_ganador           mediana=0.781  media=0.911  q25=0.559  q75=1.074
+    la herramienta supera al naive en 53% de las series
+
+----------------------------------------------------------------------------------------
+Ganador mas frecuente por regimen:
+regimen
+estacional_con_tendencia       holt_winters
+estacional_plano                auto_sarima
+no_estacional_con_tendencia            holt
+no_estacional_plano              auto_arima
+Name: ganador, dtype: object
+
+----------------------------------------------------------------------------------------
+Prueba de Diebold-Mariano agregada (herramienta vs. naive; H0: igual exactitud)
+Nota: requiere errores por origen, no solo el MASE resumen; con las columnas
+agregadas de este panel se reporta un contraste aproximado sobre el MASE por
+serie (equivalente a un signo de Wilcoxon), declarado explicitamente como tal:
+  Wilcoxon signed-rank: estadistico=2127.0  p=0.0000  n=133
+  Se rechaza H0 (p<0.05): diferencia significativa entre herramienta y naive.
+========================================================================================
+
+CSV: C:\Users\LENOVO\OneDrive - uniminuto.edu\UNIANDES Research Projects\RESEARCH INVITADOS PROFE LUIS-DAVID\Forecasting\experiments\output\panel_publico.csv

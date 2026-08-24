@@ -1,0 +1,33 @@
+serie,n,reps,tendencia_verdadera,acierto_tendencia,error_tendencia,tipo_error_tendencia,estacionalidad_verdadera,estacionalidad_no_evaluable,acierto_estacionalidad,error_estacionalidad,tipo_error_estacionalidad,F_S_mediana,segundos
+ruido blanco,24,1000,False,0.953,0.04700000000000004,falso positivo,False,1.0,,,falso positivo,,6.9
+ruido blanco,36,1000,False,0.939,0.061000000000000054,falso positivo,False,0.0,0.984,0.016000000000000014,falso positivo,0.47960872622444467,11.13
+ruido blanco,48,1000,False,0.94,0.06000000000000005,falso positivo,False,0.0,0.972,0.028000000000000025,falso positivo,0.27043664599471523,13.82
+ruido blanco,120,1000,False,0.927,0.07299999999999995,falso positivo,False,0.0,0.995,0.0050000000000000044,falso positivo,0.22012123292958596,21.22
+AR(1) phi=0.7,24,1000,False,0.939,0.061000000000000054,falso positivo,False,1.0,,,falso positivo,,7.07
+AR(1) phi=0.7,36,1000,False,0.913,0.08699999999999997,falso positivo,False,0.0,0.974,0.026000000000000023,falso positivo,0.42316179334289517,13.12
+AR(1) phi=0.7,48,1000,False,0.89,0.10999999999999999,falso positivo,False,0.0,0.965,0.03500000000000003,falso positivo,0.24615998503763176,15.21
+AR(1) phi=0.7,120,1000,False,0.904,0.09599999999999997,falso positivo,False,0.0,0.995,0.0050000000000000044,falso positivo,0.20353927969895752,22.76
+paseo aleatorio,24,1000,False,0.842,0.15800000000000003,falso positivo,False,1.0,,,falso positivo,,5.23
+paseo aleatorio,36,1000,False,0.865,0.135,falso positivo,False,0.0,0.984,0.016000000000000014,falso positivo,0.33149023030739916,12.31
+paseo aleatorio,48,1000,False,0.847,0.15300000000000002,falso positivo,False,0.0,0.994,0.006000000000000005,falso positivo,0.17208751656386495,33.13
+paseo aleatorio,120,1000,False,0.883,0.11699999999999999,falso positivo,False,0.0,1.0,0.0,falso positivo,0.1434878015102144,25.55
+tendencia lineal,24,1000,True,0.427,0.573,falso negativo,False,1.0,,,falso positivo,,6.07
+tendencia lineal,36,1000,True,0.914,0.08599999999999997,falso negativo,False,0.0,0.982,0.018000000000000016,falso positivo,0.48791071823413407,10.1
+tendencia lineal,48,1000,True,0.994,0.006000000000000005,falso negativo,False,0.0,0.978,0.02200000000000002,falso positivo,0.2658290752099128,11.82
+tendencia lineal,120,1000,True,1.0,0.0,falso negativo,False,0.0,0.997,0.0030000000000000027,falso positivo,0.22599355864481074,20.13
+tendencia limpia,24,1000,True,0.995,0.0050000000000000044,falso negativo,False,1.0,,,falso positivo,,3.97
+tendencia limpia,36,1000,True,1.0,0.0,falso negativo,False,0.0,0.979,0.02100000000000002,falso positivo,0.4945785478059695,11.02
+tendencia limpia,48,1000,True,1.0,0.0,falso negativo,False,0.0,0.983,0.017000000000000015,falso positivo,0.27375927264982297,12.64
+tendencia limpia,120,1000,True,1.0,0.0,falso negativo,False,0.0,0.994,0.006000000000000005,falso positivo,0.2284217583457222,19.47
+paseo con deriva,24,1000,True,0.442,0.558,falso negativo,False,1.0,,,falso positivo,,7.72
+paseo con deriva,36,1000,True,0.553,0.44699999999999995,falso negativo,False,0.0,0.985,0.015000000000000013,falso positivo,0.33317373520138666,14.35
+paseo con deriva,48,1000,True,0.703,0.29700000000000004,falso negativo,False,0.0,0.993,0.007000000000000006,falso positivo,0.15270588330886842,14.06
+paseo con deriva,120,1000,True,0.957,0.04300000000000004,falso negativo,False,0.0,1.0,0.0,falso positivo,0.14235813625204896,22.45
+estacional pura,24,1000,False,0.999,0.0010000000000000009,falso positivo,True,1.0,,,falso negativo,,7.2
+estacional pura,36,1000,False,0.891,0.10899999999999999,falso positivo,True,0.0,1.0,0.0,falso negativo,0.9091051033103417,13.97
+estacional pura,48,1000,False,0.908,0.09199999999999997,falso positivo,True,0.0,1.0,0.0,falso negativo,0.8723591751039357,14.26
+estacional pura,120,1000,False,0.935,0.06499999999999995,falso positivo,True,0.0,1.0,0.0,falso negativo,0.859590211644692,27.92
+tendencia+estacion.,24,1000,True,0.0,1.0,falso negativo,True,1.0,,,falso negativo,,8.03
+tendencia+estacion.,36,1000,True,0.808,0.19199999999999995,falso negativo,True,0.0,1.0,0.0,falso negativo,0.9077979545492365,12.1
+tendencia+estacion.,48,1000,True,0.885,0.11499999999999999,falso negativo,True,0.0,1.0,0.0,falso negativo,0.8709595615372692,12.71
+tendencia+estacion.,120,1000,True,1.0,0.0,falso negativo,True,0.0,1.0,0.0,falso negativo,0.8597319837274204,19.34

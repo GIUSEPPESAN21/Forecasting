@@ -8,22 +8,22 @@ resuelve y el archivo donde vive la corrección.
 ## [2.0.0] — 2026-08-24
 
 ### Fase 0 — Arquitectura
-- Se creó `forecasting_core/`, paquete puro sin dependencias de Dash/Plotly,
-  testeable de forma independiente. `app.py` pasó a ser una capa delgada que
+- Se creó `codigo/forecasting_core/`, paquete puro sin dependencias de Dash/Plotly,
+  testeable de forma independiente. `codigo/app.py` pasó a ser una capa delgada que
   solo construye el layout y conecta callbacks.
-- `tesisVF.py` (1301 líneas, monolito Dash+lógica) queda sustituido por
-  `forecasting_core/` + `app.py`.
+- `tesisVF.py` (eliminado del arbol de trabajo tras el refactor; recuperable via `git show 63bf54e:tesisVF.py`) (1301 líneas, monolito Dash+lógica) queda sustituido por
+  `codigo/forecasting_core/` + `codigo/app.py`.
 
 ### Fase 1 — Núcleo estadístico
 - **F01** — `es_muy_lineal()` (predicado insatisfacible: `R²≥0.90` y
   `|ACF₁₂|<0.10` simultáneos, 0% de casos satisfechos en 3000 series
   sintéticas) reemplazado por `allow_constant_level_methods()` en
-  `forecasting_core/classification.py`: nivel constante se admite cuando la
+  `codigo/forecasting_core/classification.py`: nivel constante se admite cuando la
   serie no tiene tendencia significativa **y** es estacionaria en nivel.
 - **F04** — `_make_predictor()` (despacho por subcadena, fallback silencioso a
   `train[-1]` para nombres no reconocidos) reemplazado por
   `MODEL_REGISTRY` con despacho por clave exacta en
-  `forecasting_core/models.py`; una clave desconocida levanta `KeyError`.
+  `codigo/forecasting_core/models.py`; una clave desconocida levanta `KeyError`.
 - **F10** — Detección de estacionalidad por `|ACF(12)|>0.30` (50.2% de falsos
   positivos sobre series con solo tendencia) reemplazada por
   `seasonality_test()`: fuerza estacional STL (Wang, Smith & Hyndman 2006)
@@ -36,19 +36,19 @@ resuelve y el archivo donde vive la corrección.
   primera diferencia con errores HAC si es I(1). ADF confirmado con KPSS.
 - **F22 (decisión a)** — El filtrado por características estructurales que el
   manuscrito afirmaba y el código no implementaba ahora existe:
-  `eligible_specs()` en `forecasting_core/models.py`, con cada exclusión
+  `eligible_specs()` en `codigo/forecasting_core/models.py`, con cada exclusión
   registrada y su motivo.
 - Orden corregido: estacionalidad se prueba primero, la serie se
   desestacionaliza (por medias estacionales sobre la serie detrendizada, no
   STL — ver docstring de `deseasonalize()`), y solo entonces se prueba
   tendencia. Probar tendencia sobre la serie cruda perdía la tendencia en el
   100% de los casos con estacionalidad fuerte y n=24.
-- Validado con `experiments/montecarlo_clasificacion.py` (1000 réplicas):
+- Validado con `codigo/experimentos/montecarlo_clasificacion.py` (1000 réplicas):
   falsos positivos de tendencia 74.4%→8.9% (media), de estacionalidad
   50.2%→1.4% (media), potencia de estacionalidad 100%.
 
 ### Fase 2 — Métricas
-- **F06** — Mean Error (ME) implementado en `forecasting_core/metrics.py`
+- **F06** — Mean Error (ME) implementado en `codigo/forecasting_core/metrics.py`
   (declarado en ambos manuscritos previos, nunca implementado).
 - **F12** — `mape()` ahora excluye explícitamente periodos con demanda cero
   (antes: `max(|y|,1e-8)` producía valores como 12,500,000,003%). `mase()`
@@ -58,7 +58,7 @@ resuelve y el archivo donde vive la corrección.
 ### Fase 3 — Validación honesta
 - **F02/F14** — `walk_forward_errors`/`walk_forward_detail` (recorridos
   triplicados por sesión) fusionados en una sola función
-  `walk_forward()` en `forecasting_core/validation.py` que devuelve agregado y
+  `walk_forward()` en `codigo/forecasting_core/validation.py` que devuelve agregado y
   detalle a la vez. Un método con cualquier origen fallido queda
   **excluido del ranking**, nunca promediado sobre menos puntos.
 - **F02** — `min_train` ahora es `max(10, 2·m)` para todos los métodos
@@ -66,10 +66,10 @@ resuelve y el archivo donde vive la corrección.
   SARIMA→ARIMA(1,1,1) a mitad del walk-forward.
 - **F03** — La fuga in-sample de `_fitted_series` (`rolling(k).mean()`
   incluía la observación que pronosticaba; MAPE mostrado 20.30% vs. honesto
-  35.38%) eliminada por construcción: `forecasting_core/models.py` expone una
+  35.38%) eliminada por construcción: `codigo/forecasting_core/models.py` expone una
   única función `ModelSpec.forecast()` usada tanto por el backtest como por el
   pronóstico final, con `h=1` para el caso de un paso.
-- **F05/F13** — `forecasting_core/optimize.py`: los orígenes del walk-forward
+- **F05/F13** — `codigo/forecasting_core/optimize.py`: los orígenes del walk-forward
   se parten en bloque de *tuning* y bloque de *evaluación*, disjuntos y
   contiguos; ningún hiperparámetro ve el bloque de evaluación. Para
   ARIMA/SARIMA el barrido desaparece: se usa `AutoARIMA`/`AutoETS`/`AutoTheta`
@@ -80,21 +80,21 @@ resuelve y el archivo donde vive la corrección.
   corrección más abajo.
 
 ### Fase 5 — Intervalos, inventario, horizonte, lote
-- **F20** — `forecasting_core/intervals.py`: intervalos de predicción por
+- **F20** — `codigo/forecasting_core/intervals.py`: intervalos de predicción por
   cuantiles empíricos del error de backtest por horizonte (con degradación
   documentada a aproximación normal si hay pocos orígenes).
-- **F20/M-08** — `forecasting_core/inventory.py`: stock de seguridad y punto
+- **F20/M-08** — `codigo/forecasting_core/inventory.py`: stock de seguridad y punto
   de reorden a partir de la desviación del error **acumulado** sobre el lead
   time (no `sigma_1·sqrt(L)`, que asume independencia entre periodos).
   Detecta y avisa cuando el sesgo acumulado domina sobre la variabilidad.
 - **F21** — Piso de no-negatividad aplicado de forma idéntica en backtest y
   pronóstico publicado (`ModelSpec.forecast(..., clip_non_negative=True)`).
-- **F19** — `forecasting_core/batch.py`: procesamiento multi-SKU con memoria
+- **F19** — `codigo/forecasting_core/batch.py`: procesamiento multi-SKU con memoria
   acotada (volcado incremental a CSV, `n_jobs = min(4, cpu_count-2)`, nunca
-  `-1`). Verificado en `tests/test_batch_memory.py` con `tracemalloc`.
+  `-1`). Verificado en `codigo/tests/test_batch_memory.py` con `tracemalloc`.
 
 ### Fase 6 — Robustez de datos y manejo de errores
-- **F15** — `forecasting_core/data.py`: acepta meses numéricos, en inglés y
+- **F15** — `codigo/forecasting_core/data.py`: acepta meses numéricos, en inglés y
   abreviados; detecta y declara la convención de separador decimal/miles;
   reporta duplicados (consolidando los idénticos, rechazando los
   contradictorios); nunca colapsa huecos temporales en silencio — exige una
@@ -106,14 +106,14 @@ resuelve y el archivo donde vive la corrección.
 ### Fase 7 — Medición de desempeño
 - Reescrito con `time.perf_counter()`, 5 repeticiones, media±desviación,
   **incluyendo el módulo de optimización** (ausente en la Tabla 3 original).
-  `experiments/benchmark_tiempos.py`. Resultado: 33.3s en n=120 (vs. 183.05s
+  `codigo/experimentos/benchmark_tiempos.py`. Resultado: 33.3s en n=120 (vs. 183.05s
   medidos en el pipeline original completo, que el manuscrito reportaba en
   89.79s por omitir la optimización). Exponente empírico de complejidad
   1.34 (vs. ~2.0 del original).
 
 ### Fase 8 — Validación estadística ampliada
-- **8.1** — `experiments/montecarlo_clasificacion.py`: ver Fase 1.
-- **8.2** — `experiments/panel_publico.py`: validación sobre 150 series de
+- **8.1** — `codigo/experimentos/montecarlo_clasificacion.py`: ver Fase 1.
+- **8.2** — `codigo/experimentos/panel_publico.py`: validación sobre 150 series de
   M3-Monthly truncadas a ≤48 observaciones, con prueba de Wilcoxon
   signed-rank. **Corrección post-hoc**: la primera corrida comparaba el
   ganador de `run_pipeline` contra `naive` sobre el mismo bloque que decidió
@@ -124,14 +124,14 @@ resuelve y el archivo donde vive la corrección.
   publicar). Corregido usando `honest_outer_estimate()`: el ganador se evalúa
   sobre un bloque externo que ni la selección del método ni el ajuste de
   hiperparámetros vieron.
-- **8.3** — Decisión documentada en `experiments/decision_prophet.md`: la
+- **8.3** — Decisión documentada en `codigo/experimentos/decision_prophet.md`: la
   comparación con Prophet (sin protocolo, datos ni código en el manuscrito
   original) se retira y se reemplaza por la comparación contra
   `AutoARIMA`/`AutoETS`/`AutoTheta`, ya integrados sin costo de dependencia
   adicional.
 
 ### Fase 4 — Línea base
-- **F09** — `experiments/vs_incumbente.py`: comparación herramienta vs.
+- **F09** — `codigo/experimentos/vs_incumbente.py`: comparación herramienta vs.
   método incumbente (promedio móvil k=3) vs. naive. Parametrizado para
   aceptar el Excel real de Tuboplex (`--input`); corre sobre un dataset
   sintético equivalente mientras esos datos no estén disponibles (ver
@@ -147,16 +147,16 @@ resuelve y el archivo donde vive la corrección.
   bloques `ELIMINAR`, tabla/figura de ejemplo, apéndice de ejemplo).
   `\documentclass[journal,...]` corregido a `[forecasting,...]` (el nombre de
   journal nunca se había fijado). Autores, afiliación, correo y CRediT
-  completados. Manuscrito movido a `manuscript/template.tex` con
-  `manuscript/Definitions/` y figuras reales en `manuscript/figures/`.
+  completados. Manuscrito movido a `manuscritos/articulo_mdpi/template.tex` con
+  `manuscritos/articulo_mdpi/Definitions/` y figuras reales en `manuscritos/articulo_mdpi/figures/`.
 - **F09 (figuras)** — Las 10 referencias a `flowchart_tool.png` (una imagen
   reutilizada 10 veces, con 10 `\label{fig:demanda}` idénticos) reemplazadas
-  por 2 figuras reales generadas por `experiments/make_figures.py`: un
+  por 2 figuras reales generadas por `codigo/experimentos/make_figures.py`: un
   diagrama de flujo del pipeline corregido y el gráfico de pronóstico del
   caso ilustrativo, cada una con `\label` único.
 - **F23** — Las 5 fórmulas mal tipografiadas de la tesis no se trasladaron al
   manuscrito: la Sección 2.5 (Error Metrics) del `.tex` usa notación LaTeX
-  estándar, verificada contra `forecasting_core/metrics.py`.
+  estándar, verificada contra `codigo/forecasting_core/metrics.py`.
 - **F24** — Bibliografía reconstruida con 33 entradas reales, formato
   numérico ACS (`Forecasting` no usa cita autor-año), cada `\cite{}`
   verificado contra un `\bibitem` existente y viceversa
@@ -175,15 +175,15 @@ resuelve y el archivo donde vive la corrección.
 - Sección Conclusions escrita (antes: placeholder de la plantilla).
 
 ### Fase 10 — Higiene de repositorio
-- **F18** — `requirements.txt` con versiones fijadas; `app.py` con
+- **F18** — `requirements.txt` con versiones fijadas; `codigo/app.py` con
   `debug=False` por defecto (activable con `FORECASTING_DEBUG=true`);
   `_backtest_with_best` (código muerto, nunca invocado en el original) no
   se trasladó — su única función honesta quedó absorbida en
   `ModelSpec.forecast()`.
 - `LICENSE` (MIT), `.gitignore`, `README.md` con instrucciones de ejecución
-  de cada script de `experiments/`.
+  de cada script de `codigo/experimentos/`.
 - Limpieza de `__MACOSX/` y `__pycache__/`.
-- Suite `pytest` (`tests/`): clasificación, métricas, ausencia de fuga
+- Suite `pytest` (`codigo/tests/`): clasificación, métricas, ausencia de fuga
   temporal (verificada programáticamente), paridad del walk-forward,
   registro de modelos, ausencia de sesgo de hiperparámetros, carga de datos,
   memoria del lote e intervalos/inventario. Ver `RESUMEN_EJECUCION.md` para

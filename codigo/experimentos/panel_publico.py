@@ -51,8 +51,8 @@ warnings.filterwarnings("ignore")
 from forecasting_core.classification import classify_series  # noqa: E402
 from forecasting_core.optimize import honest_outer_estimate  # noqa: E402
 
-OUT_DIR = Path(__file__).resolve().parent / "output"
-CACHE_DIR = OUT_DIR / "m3cache"
+OUT_DIR = Path(__file__).resolve().parents[2] / "resultados"
+CACHE_DIR = Path(__file__).resolve().parent / "m3cache"
 
 
 def load_m3_monthly_short(max_len: int, min_len: int = 24) -> pd.DataFrame:

@@ -24,7 +24,7 @@ import pandas as pd
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 warnings.filterwarnings("ignore")
 
-OUT = Path(__file__).resolve().parents[1] / "manuscript" / "figures"
+OUT = Path(__file__).resolve().parents[2] / "manuscritos" / "articulo_mdpi" / "figures"
 OUT.mkdir(parents=True, exist_ok=True)
 
 plt.rcParams.update({
