@@ -27,7 +27,7 @@ warnings.filterwarnings("ignore")
 
 from forecasting_core.classification import classify_series  # noqa: E402
 
-OUT_DIR = Path(__file__).resolve().parent / "output"
+OUT_DIR = Path(__file__).resolve().parents[2] / "resultados"
 
 
 # ---------------------------------------------------------------------------

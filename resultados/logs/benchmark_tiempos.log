@@ -1,0 +1,25 @@
+Entorno:
+  Python      : 3.11.9
+  Plataforma  : Windows-10-10.0.26200-SP0
+  CPU logicos : 8
+  pandas 2.2.2 | numpy 2.4.6 | scipy 1.15.2 | statsmodels 0.14.6 | statsforecast 2.1.1
+
+n=  24  media=  3.94s  sd= 0.61s  min=  3.10s  max=  4.71s  (5 repeticiones)
+n=  48  media= 11.76s  sd= 2.58s  min=  9.48s  max= 16.18s  (5 repeticiones)
+n=  72  media= 15.20s  sd= 2.12s  min= 12.33s  max= 17.44s  (5 repeticiones)
+n=  96  media= 29.91s  sd=10.76s  min= 22.37s  max= 48.77s  (5 repeticiones)
+n= 120  media= 33.33s  sd= 7.13s  min= 25.39s  max= 44.27s  (5 repeticiones)
+
+==============================================================================
+Ajuste de complejidad empirica: tiempo ~ 5.82e-02 * n^1.34
+  Interpretacion: crecimiento superlineal (exponente 1.34).
+  [Auditoria A midio un exponente ~2.0 sobre los datos del propio manuscrito;
+   el original lo describia como 'increases progressively', sin caracterizarlo.]
+==============================================================================
+
+CSV: C:\Users\LENOVO\OneDrive - uniminuto.edu\UNIANDES Research Projects\RESEARCH INVITADOS PROFE LUIS-DAVID\Forecasting\experiments\output\benchmark_tiempos.csv
+
+Presupuesto de la Fase 1 del prompt maestro (sesion interactiva, n<=48):
+  objetivo: pipeline completo <= 25 s
+  n= 24: media 3.94s -> OK
+  n= 48: media 11.76s -> OK

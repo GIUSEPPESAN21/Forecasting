@@ -36,7 +36,7 @@ from forecasting_core.intervals import prediction_interval  # noqa: E402
 from forecasting_core.models import get_spec  # noqa: E402
 from forecasting_core.optimize import run_pipeline  # noqa: E402
 
-OUT_DIR = Path(__file__).resolve().parent / "output"
+OUT_DIR = Path(__file__).resolve().parents[2] / "resultados"
 
 
 def make_series(n: int, seed: int) -> pd.Series:

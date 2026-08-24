@@ -5,18 +5,19 @@ __MACOSX/
 ._*
 .DS_Store
 
-# Salidas de experimentos: reproducibles desde los scripts, no versionadas
-experiments/output/
+# Cache de datasets publicos descargados por los scripts (reproducible, no
+# versionado). Los resultados finales SI se versionan en resultados/.
+codigo/experimentos/m3cache/
 
 # Compilacion de LaTeX
-manuscript/*.aux
-manuscript/*.bbl
-manuscript/*.blg
-manuscript/*.log
-manuscript/*.out
-manuscript/*.synctex.gz
-manuscript/*.fls
-manuscript/*.fdb_latexmk
+manuscritos/articulo_mdpi/*.aux
+manuscritos/articulo_mdpi/*.bbl
+manuscritos/articulo_mdpi/*.blg
+manuscritos/articulo_mdpi/*.log
+manuscritos/articulo_mdpi/*.out
+manuscritos/articulo_mdpi/*.synctex.gz
+manuscritos/articulo_mdpi/*.fls
+manuscritos/articulo_mdpi/*.fdb_latexmk
 
 .venv/
 venv/

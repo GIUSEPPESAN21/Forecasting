@@ -64,7 +64,7 @@ from forecasting_core.models import MODEL_REGISTRY  # noqa: E402
 from forecasting_core.optimize import honest_outer_estimate  # noqa: E402
 from forecasting_core.validation import backtest_one_step  # noqa: E402
 
-OUT_DIR = Path(__file__).resolve().parent / "output"
+OUT_DIR = Path(__file__).resolve().parents[2] / "resultados"
 
 INCUMBENTE_KEY = "moving_average"
 INCUMBENTE_PARAMS = {"k": 3}  # el promedio movil de 3 periodos descrito en la tesis Sec. 3.1

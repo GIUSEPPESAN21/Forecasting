@@ -1,0 +1,61 @@
+SIN Excel real: usando dataset sintetico que reproduce la estructura de la
+tesis (24-36 meses, series de proyectos de obra, picos, cambios abruptos).
+Este resultado verifica el pipeline de punta a punta; NO reemplaza la
+corrida sobre los datos reales de Tuboplex, que sigue pendiente.
+
+  PRODUCTO-SINT-01             n= 42 | incumbente MASE=0.669 MAPE=  7.96% | herramienta (ses) MASE=0.556 MAPE=  6.57% | mejora +16.9%
+  PRODUCTO-SINT-02             n= 30 | incumbente MASE=0.794 MAPE= 10.44% | herramienta (linear_regression) MASE=0.803 MAPE= 10.77% | mejora -1.2%
+  PRODUCTO-SINT-03             n= 30 | incumbente MASE=1.689 MAPE= 16.90% | herramienta (naive) MASE=1.342 MAPE= 13.92% | mejora +20.6%
+  PRODUCTO-SINT-04             n= 36 | incumbente MASE=1.134 MAPE= 11.98% | herramienta (naive) MASE=0.997 MAPE= 10.70% | mejora +12.1%
+  PRODUCTO-SINT-05             n= 36 | incumbente MASE=0.337 MAPE=104.86% | herramienta (naive) MASE=0.343 MAPE=101.69% | mejora -1.7%
+  PRODUCTO-SINT-06             n= 36 | incumbente MASE=1.919 MAPE= 17.21% | herramienta (ses) MASE=1.633 MAPE= 14.29% | mejora +14.9%
+  PRODUCTO-SINT-07             n= 36 | incumbente MASE=0.411 MAPE=  7.24% | herramienta (naive) MASE=0.488 MAPE=  8.70% | mejora -18.8%
+  PRODUCTO-SINT-08             n= 36 | incumbente MASE=1.301 MAPE= 23.42% | herramienta (auto_arima) MASE=0.533 MAPE= 10.14% | mejora +59.0%
+  PRODUCTO-SINT-09             n= 36 | incumbente MASE=1.661 MAPE= 15.50% | herramienta (naive) MASE=1.032 MAPE=  9.52% | mejora +37.9%
+  PRODUCTO-SINT-10             n= 36 | incumbente MASE=0.981 MAPE=147.48% | herramienta (ses) MASE=0.846 MAPE=158.52% | mejora +13.7%
+  PRODUCTO-SINT-11             n= 36 | incumbente MASE=0.762 MAPE=  7.31% | herramienta (naive) MASE=1.335 MAPE= 12.85% | mejora -75.3%
+  PRODUCTO-SINT-12             n= 30 | incumbente MASE=0.829 MAPE= 17.81% | herramienta (holt) MASE=0.741 MAPE= 13.92% | mejora +10.5%
+  PRODUCTO-SINT-13             n= 42 | incumbente MASE=0.956 MAPE= 15.20% | herramienta (auto_sarima) MASE=0.132 MAPE=  2.01% | mejora +86.2%
+  PRODUCTO-SINT-14             n= 30 | incumbente MASE=1.432 MAPE= 13.51% | herramienta (naive) MASE=0.810 MAPE=  7.73% | mejora +43.4%
+  PRODUCTO-SINT-15             n= 36 | incumbente MASE=0.829 MAPE=176.19% | herramienta (linear_regression) MASE=0.760 MAPE=150.01% | mejora +8.3%
+  PRODUCTO-SINT-16             n= 36 | incumbente MASE=0.648 MAPE=  6.90% | herramienta (auto_arima) MASE=0.474 MAPE=  4.85% | mejora +26.9%
+  PRODUCTO-SINT-17             n= 42 | incumbente MASE=0.702 MAPE= 15.63% | herramienta (auto_arima) MASE=0.848 MAPE= 17.99% | mejora -20.8%
+  PRODUCTO-SINT-18             n= 36 | incumbente MASE=1.117 MAPE= 20.39% | herramienta (auto_arima) MASE=0.933 MAPE= 17.41% | mejora +16.5%
+  PRODUCTO-SINT-19             n= 42 | incumbente MASE=1.451 MAPE= 12.57% | herramienta (auto_arima) MASE=1.056 MAPE=  8.79% | mejora +27.2%
+  PRODUCTO-SINT-20             n= 42 | incumbente MASE=1.935 MAPE=204.59% | herramienta (auto_arima) MASE=1.670 MAPE= 96.33% | mejora +13.7%
+  PRODUCTO-SINT-21             n= 36 | incumbente MASE=0.796 MAPE=  9.85% | herramienta (ses) MASE=0.763 MAPE=  9.66% | mejora +4.1%
+  PRODUCTO-SINT-22             n= 42 | incumbente MASE=0.888 MAPE=  7.84% | herramienta (auto_arima) MASE=0.725 MAPE=  6.69% | mejora +18.3%
+  PRODUCTO-SINT-23             n= 36 | incumbente MASE=1.062 MAPE= 17.29% | herramienta (auto_arima) MASE=0.796 MAPE= 13.58% | mejora +25.0%
+  PRODUCTO-SINT-24             n= 36 | incumbente MASE=1.054 MAPE= 14.23% | herramienta (auto_arima) MASE=0.709 MAPE=  9.28% | mejora +32.7%
+  PRODUCTO-SINT-25             n= 30 | incumbente MASE=0.832 MAPE=177.84% | herramienta (ses) MASE=0.647 MAPE= 79.17% | mejora +22.3%
+  PRODUCTO-SINT-26             n= 30 | incumbente MASE=0.751 MAPE=  6.94% | herramienta (ses) MASE=0.871 MAPE=  8.04% | mejora -16.1%
+  PRODUCTO-SINT-27             n= 36 | incumbente MASE=1.603 MAPE= 11.87% | herramienta (naive) MASE=0.881 MAPE=  6.68% | mejora +45.0%
+  PRODUCTO-SINT-28             n= 42 | incumbente MASE=1.841 MAPE= 13.57% | herramienta (seasonal_naive) MASE=1.484 MAPE= 10.57% | mejora +19.4%
+  PRODUCTO-SINT-29             n= 30 | incumbente MASE=1.001 MAPE=  9.72% | herramienta (auto_arima) MASE=0.898 MAPE=  8.75% | mejora +10.2%
+  PRODUCTO-SINT-30             n= 36 | incumbente MASE=0.299 MAPE= 65.32% | herramienta (naive) MASE=0.176 MAPE= 34.38% | mejora +40.9%
+  PRODUCTO-SINT-31             n= 30 | incumbente MASE=0.776 MAPE=  8.03% | herramienta (naive) MASE=0.984 MAPE= 10.01% | mejora -26.8%
+  PRODUCTO-SINT-32             n= 42 | incumbente MASE=0.829 MAPE=  4.17% | herramienta (linear_regression) MASE=0.863 MAPE=  4.42% | mejora -4.1%
+  PRODUCTO-SINT-33             n= 42 | incumbente MASE=0.698 MAPE= 19.32% | herramienta (auto_theta) MASE=0.475 MAPE= 13.21% | mejora +32.0%
+  PRODUCTO-SINT-34             n= 42 | incumbente MASE=1.789 MAPE= 14.51% | herramienta (holt_winters) MASE=0.627 MAPE=  5.13% | mejora +65.0%
+  PRODUCTO-SINT-35             n= 42 | incumbente MASE=1.063 MAPE=187.27% | herramienta (auto_arima) MASE=0.820 MAPE=135.01% | mejora +22.9%
+  PRODUCTO-SINT-36             n= 42 | incumbente MASE=0.485 MAPE=  5.83% | herramienta (linear_regression) MASE=0.386 MAPE=  4.67% | mejora +20.4%
+  PRODUCTO-SINT-37             n= 36 | incumbente MASE=0.521 MAPE=  2.89% | herramienta (linear_regression) MASE=0.316 MAPE=  1.76% | mejora +39.4%
+  PRODUCTO-SINT-38             n= 42 | incumbente MASE=2.474 MAPE= 16.11% | herramienta (seasonal_naive) MASE=0.971 MAPE=  6.16% | mejora +60.7%
+  PRODUCTO-SINT-39             n= 42 | incumbente MASE=1.785 MAPE= 12.57% | herramienta (auto_sarima) MASE=1.282 MAPE=  9.05% | mejora +28.2%
+  PRODUCTO-SINT-40             n= 42 | incumbente MASE=0.489 MAPE=205.52% | herramienta (ses) MASE=0.336 MAPE=136.44% | mejora +31.2%
+
+========================================================================================
+RESUMEN — dataset sintetico (pendiente de datos reales) (40 series)
+========================================================================================
+  MASE mediano   incumbente=0.922  naive=0.949  herramienta=0.807
+  MAPE mediano   incumbente=14.4%  naive=11.4%  herramienta=10.1%
+  |ME| mediano   incumbente=217.1  naive=55.4  herramienta=111.9   (sesgo — no reportado antes, F06)
+  Series donde la herramienta supera al incumbente: 32/40 (80%)
+  Series donde la herramienta supera al naive      : 24/40 (60%)
+  Mejora mediana de MASE vs. incumbente: +19.9%
+
+  Prueba de Diebold-Mariano (H0: igual exactitud, perdida cuadratica):
+    NOTA: por serie no siempre hay suficientes origenes (n>=4) para una
+    prueba individual fiable; con pocas series el resultado es orientativo,
+    no una conclusion definitiva de superioridad estadistica.
+C:\Users\LENOVO\OneDrive - uniminuto.edu\UNIANDES Research Projects\RESEARCH INVITADOS PROFE LUIS-DAVID\Forecasting\experiments\output\vs_incumbente.csv

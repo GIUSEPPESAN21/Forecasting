@@ -1,0 +1,11 @@
+﻿etiqueta,mase,mape,mad,me,n_preds
+SARIMA (orden por AICc),0.486,5.829,139.302,56.202,8
+Regresion lineal sobre el tiempo,0.637,7.813,182.569,6.419,8
+Suavizamiento exponencial simple,0.659,7.74,188.829,151.653,8
+ARIMA (orden por AICc),0.661,7.605,189.462,157.363,8
+Holt (suavizamiento exponencial doble),0.714,8.495,204.591,107.645,8
+Theta (variante por AICc),0.759,9.202,217.468,18.733,8
+ETS (familia por AICc),0.778,9.344,222.988,40.684,8
+Naive estacional (valor de hace m periodos),0.895,10.897,256.575,243.25,8
+Naive (ultimo valor),0.935,11.112,268.013,65.037,8
+Holt-Winters (aditivo),1.201,14.641,344.181,12.323,8
