@@ -24,6 +24,10 @@ codigo/                       Todo el software
     intervals.py                    Intervalos de predicción empíricos (F20)
     inventory.py                    Stock de seguridad y punto de reorden (F20)
     batch.py                        Procesamiento multi-SKU con memoria acotada (F19)
+  external_baselines/           Comparadores externos AISLADOS y OPCIONALES: Prophet,
+                                 LightGBM (Fase 11, F27). No forman parte del núcleo ni
+                                 de MODEL_REGISTRY; imports perezosos (ver §"Comparación
+                                 externa" abajo).
   app.py                          Interfaz Dash (capa delgada sobre forecasting_core)
   batch_cli.py                     CLI de procesamiento por lotes multi-SKU (F19)
   tests/                           Suite pytest (ver más abajo)
@@ -36,8 +40,16 @@ manuscritos/
   articulo_mdpi/                  Manuscrito LaTeX (MDPI, journal Forecasting)
   tesis_original/                  Documento de tesis original (Universidad de los Andes)
 
-docs/                           Documentación de proceso: auditoría inicial y prompt maestro
+docs/                           Documentación de proceso: auditoría inicial, prompts
+                                 maestro de cada fase (Fases 0-10 y Fase 11), el PDF
+                                 de comparación aportado por los tutores (F26), y
+                                 MANUAL_USUARIO.md (manual de uso de la app, sin
+                                 necesidad de leer código — ver enlace abajo)
 ```
+
+**Manual de usuario**: [`docs/MANUAL_USUARIO.md`](docs/MANUAL_USUARIO.md) — instalación,
+cómo correr la app, recorrido de los cinco módulos (incluida la Comparación
+externa) y uso de `batch_cli.py`, pensado para alguien que nunca vio el código.
 
 ## Instalación
 
@@ -49,6 +61,23 @@ pip install -r requirements.txt
 
 Probado con Python 3.11.9. Las versiones de librería están fijadas en
 `requirements.txt` a las usadas para producir los resultados de `resultados/`.
+
+### Dependencias opcionales: comparación externa (Prophet / LightGBM)
+
+`requirements.txt` es intencionalmente la instalación **mínima** para correr
+el núcleo y la app. Prophet y LightGBM (Fase 11, F27) son comparadores
+externos aislados en `codigo/external_baselines/`, con su propio archivo de
+dependencias:
+
+```bash
+pip install -r requirements-external.txt
+```
+
+Sin este paso, `codigo/app.py` y toda la suite `pytest` funcionan
+exactamente igual (el Módulo 5 de la app queda deshabilitado con un aviso, y
+`codigo/tests/test_external_baselines.py` se salta automáticamente). Ver
+`codigo/experimentos/decision_prophet.md` para la justificación completa de
+por qué estos paquetes viven aislados y no en `requirements.txt`.
 
 ## Ejecutar la aplicación
 
@@ -102,7 +131,19 @@ python codigo/experimentos/benchmark_tiempos.py --reps 5 --sizes 24 48 72 96 120
 
 # Figuras del manuscrito (escriben en manuscritos/articulo_mdpi/figures/)
 python codigo/experimentos/make_figures.py
+
+# Comparación externa: Herramienta vs. Prophet vs. LightGBM (Fase 11, F26/F27)
+# Requiere requirements-external.txt instalado; ver sección arriba.
+python codigo/experimentos/comparativa_externa.py --seed 20260824
+
+# Figuras de la comparación externa (F28; requiere el CSV anterior)
+python codigo/experimentos/make_figures_comparativa.py
 ```
+
+| Script | Figura(s) que produce | Sección del manuscrito |
+|---|---|---|
+| `make_figures.py` | `flowchart_tool.png`, `fig2_forecast_caso.png` | Metodología (Fig. 1), Caso ilustrativo (Fig. 2) |
+| `make_figures_comparativa.py` | `fig_c1_boxplot_mase.png`, `fig_c2_mase_vs_longitud.png`, `fig_c3_panel_regimenes.png` | Comparación externa (Fase 12, pendiente de incorporar al manuscrito — ver `resultados/comparativa_externa.csv`) |
 
 ## Resultados versionados
 
@@ -118,6 +159,9 @@ resultados/
   vs_incumbente.csv                 40 series, herramienta vs. incumbente vs. naive
   panel_publico.csv                 150 series M3-Monthly, protocolo de bloque externo
   benchmark_tiempos.csv             tiempos de pipeline por tamaño de serie
+  comparativa_externa.csv           Herramienta vs. Prophet vs. LightGBM (Fase 11, F27):
+                                     10 longitudes x 5 regímenes estructurales, protocolo
+                                     de bloque externo único para los tres métodos
   logs/                             transcripciones de consola de cada corrida
 ```
 

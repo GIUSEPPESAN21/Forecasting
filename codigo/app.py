@@ -25,6 +25,7 @@ import plotly.graph_objects as go
 from dash import Input, Output, State, dash_table, dcc, html, no_update
 from dash.exceptions import PreventUpdate
 
+from external_baselines import LIGHTGBM_AVAILABLE, PROPHET_AVAILABLE
 from forecasting_core.data import load_series
 from forecasting_core.intervals import prediction_interval
 from forecasting_core.inventory import compute_policy
@@ -57,6 +58,31 @@ def cargar_serie_desde_upload(contents: str, gap_policy: str = "report"):
 
 
 # -------------------------------------------------
+# Modo demo (F29): serie sintetica embebida para probar la herramienta sin
+# preparar un Excel. Pasa por `load_series()`, la misma ruta que un archivo
+# real, para que el reporte de carga y la validacion sean identicos.
+# -------------------------------------------------
+_DEMO_MESES = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio",
+              "agosto", "septiembre", "octubre", "noviembre", "diciembre"]
+
+
+def _demo_dataframe() -> pd.DataFrame:
+    rng = np.random.default_rng(20260824)
+    n = 48
+    t = np.arange(n, dtype=float)
+    y = 1800 + 18 * t + 300 * np.sin(2 * np.pi * t / 12) + rng.normal(0, 120, n)
+    y[14] += 900   # pico de proyecto de obra, igual que el caso ilustrativo
+    y[33] -= 500
+    y = np.maximum(y, 0)
+    idx = pd.date_range("2021-01-01", periods=n, freq="MS")
+    return pd.DataFrame({
+        "year": idx.year,
+        "month": [_DEMO_MESES[m - 1] for m in idx.month],
+        "demand": np.round(y, 2),
+    })
+
+
+# -------------------------------------------------
 # Layout
 # -------------------------------------------------
 app.layout = dbc.Container([
@@ -76,6 +102,20 @@ app.layout = dbc.Container([
         },
         multiple=False,
     ),
+
+    dbc.Row([
+        dbc.Col(
+            dbc.Button("Cargar datos de ejemplo", id="btn-demo-data",
+                      color="secondary", outline=True, size="sm"),
+            width="auto",
+        ),
+        dbc.Col(
+            html.Span("Prueba la herramienta sin preparar un Excel: carga una serie "
+                     "sintetica de 48 meses (tendencia + estacionalidad).",
+                     className="text-muted small align-self-center"),
+            width="auto",
+        ),
+    ], className="mb-2 mt-1"),
 
     dbc.Row([
         dbc.Col([
@@ -156,6 +196,31 @@ app.layout = dbc.Container([
     ], className="mb-3"),
     dcc.Loading(html.Div(id="inventory-output", className="mt-2"), type="default"),
 
+    html.Hr(),
+    html.H4("5. Comparacion externa (Prophet / LightGBM)", className="mt-2"),
+    html.P(
+        "Linea base de comparacion, no un modulo de decision: Prophet y LightGBM "
+        "se evaluan sobre la serie del Modulo 1 con el mismo protocolo honesto "
+        "(bloque externo) que la Herramienta. Ver docs/MANUAL_USUARIO.md.",
+        className="text-muted small",
+    ),
+    (
+        html.Div([
+            dbc.Button("Ejecutar comparacion externa", id="btn-comparacion-externa",
+                      color="primary", outline=True, className="mb-2"),
+            dcc.Loading(html.Div(id="comparacion-externa-output"), type="default"),
+        ]) if (PROPHET_AVAILABLE or LIGHTGBM_AVAILABLE) else
+        dbc.Alert([
+            html.P("Modulo deshabilitado: ni prophet ni mlforecast/lightgbm estan "
+                   "instalados en este entorno.", className="mb-1"),
+            html.P([
+                "Instale ", html.Code("pip install -r requirements-external.txt"),
+                " y reinicie la aplicacion para activarlo. El resto de la "
+                "herramienta (Modulos 1-4) funciona exactamente igual sin esto.",
+            ], className="mb-0 small"),
+        ], color="secondary")
+    ),
+
     dcc.Store(id="series-store"),
     dcc.Store(id="best-model-store"),
 ], fluid=True)
@@ -164,25 +229,11 @@ app.layout = dbc.Container([
 # -------------------------------------------------
 # Modulo 0 - Carga y validacion
 # -------------------------------------------------
-@app.callback(
-    [Output("alerta", "children"),
-     Output("reporte-carga", "children"),
-     Output("preview", "children"),
-     Output("series-store", "data")],
-    Input("upload-data", "contents"),
-    [State("upload-data", "filename"),
-     State("gap-policy", "value")],
-)
-def validar_y_mostrar(contents, filename, gap_policy):
-    if contents is None:
-        return "", "", "", None
-
-    try:
-        result = cargar_serie_desde_upload(contents, gap_policy=gap_policy or "report")
-    except Exception as exc:
-        logger.exception("Error al parsear el archivo subido")
-        return dbc.Alert("Error al leer el archivo: {}".format(exc), color="danger"), "", "", None
-
+def _procesar_carga(result):
+    """Renderiza un `LoadResult` (Excel real o serie demo) a los 4 outputs
+    del Modulo 1. Extraido de `validar_y_mostrar` para que el callback del
+    modo demo (F29) reutilice exactamente el mismo render sin duplicar la
+    logica de carga real (`load_series`, sin tocar)."""
     report = result.report
     if not report.ok:
         alerta = dbc.Alert(
@@ -225,6 +276,44 @@ def validar_y_mostrar(contents, filename, gap_policy):
 
     store = {"index": [d.isoformat() for d in serie.index], "values": serie.values.tolist()}
     return alerta, reporte, preview, store
+
+
+@app.callback(
+    [Output("alerta", "children"),
+     Output("reporte-carga", "children"),
+     Output("preview", "children"),
+     Output("series-store", "data")],
+    Input("upload-data", "contents"),
+    [State("upload-data", "filename"),
+     State("gap-policy", "value")],
+)
+def validar_y_mostrar(contents, filename, gap_policy):
+    if contents is None:
+        return "", "", "", None
+    try:
+        result = cargar_serie_desde_upload(contents, gap_policy=gap_policy or "report")
+    except Exception as exc:
+        logger.exception("Error al parsear el archivo subido")
+        return dbc.Alert("Error al leer el archivo: {}".format(exc), color="danger"), "", "", None
+    return _procesar_carga(result)
+
+
+@app.callback(
+    [Output("alerta", "children", allow_duplicate=True),
+     Output("reporte-carga", "children", allow_duplicate=True),
+     Output("preview", "children", allow_duplicate=True),
+     Output("series-store", "data", allow_duplicate=True)],
+    Input("btn-demo-data", "n_clicks"),
+    State("gap-policy", "value"),
+    prevent_initial_call=True,
+)
+def cargar_datos_demo(n_clicks, gap_policy):
+    """Modo demo (F29): un solo callback adicional, no toca `load_series` ni
+    la ruta de carga real -reutiliza el mismo `_procesar_carga` de arriba."""
+    if not n_clicks:
+        raise PreventUpdate
+    result = load_series(_demo_dataframe(), gap_policy=gap_policy or "report")
+    return _procesar_carga(result)
 
 
 def _serie_desde_store(data) -> pd.Series | None:
@@ -443,6 +532,150 @@ def render_inventory(lead_time, service_level, best_payload, data):
     alertas = [dbc.Alert(w, color="warning", className="small py-2") for w in pol.warnings]
     return dbc.Card([dbc.CardHeader("Politica de inventario"),
                      dbc.CardBody(body + alertas)])
+
+
+# -------------------------------------------------
+# Modulo 5 - Comparacion externa (Prophet / LightGBM) — Fase 11, F27/F29.
+#
+# Import guard: `PROPHET_AVAILABLE`/`LIGHTGBM_AVAILABLE` (probados sin
+# importar de verdad, ver external_baselines/__init__.py) deciden en tiempo
+# de construccion del layout si este boton/callback tienen algo que hacer.
+# Si ninguno esta instalado, el layout ya muestra el aviso de "deshabilitado"
+# (arriba) y este callback nunca se registra contra un boton inexistente.
+# -------------------------------------------------
+if PROPHET_AVAILABLE or LIGHTGBM_AVAILABLE:
+
+    def _outer_block_para_app(n: int) -> int | None:
+        """Mismo criterio que `comparativa_externa.py::choose_outer_block`,
+        duplicado a proposito: `app.py` (capa de interfaz) no importa desde
+        `codigo/experimentos/` (capa de scripts de reproducibilidad), igual
+        que `external_baselines` no importa desde `forecasting_core` para
+        aplicar el piso de no-negatividad (ver adapters.py)."""
+        floor, default, minimum = 22, 6, 2
+        ob = min(default, n - floor)
+        return int(ob) if ob >= minimum else None
+
+    @app.callback(
+        Output("comparacion-externa-output", "children"),
+        Input("btn-comparacion-externa", "n_clicks"),
+        State("series-store", "data"),
+        State("horizon-select", "value"),
+        prevent_initial_call=True,
+    )
+    def ejecutar_comparacion_externa(n_clicks, data, horizon):
+        if not n_clicks:
+            raise PreventUpdate
+        serie = _serie_desde_store(data)
+        if serie is None:
+            return dbc.Alert("Cargue una serie en el Modulo 1 primero (o use "
+                             "\"Cargar datos de ejemplo\").", color="warning")
+
+        from external_baselines.adapters import external_specs
+        from forecasting_core.metrics import compute_metrics
+        from forecasting_core.models import get_spec
+        from forecasting_core.optimize import honest_outer_estimate
+        from forecasting_core.validation import backtest_one_step
+
+        specs = external_specs()
+        if not specs:
+            return dbc.Alert(
+                "Ningun comparador externo esta disponible en tiempo de ejecucion "
+                "(el paquete se detecto en el import guard pero fallo al cargar). "
+                "Revise la instalacion de requirements-external.txt.", color="danger")
+
+        s = serie.dropna()
+        n = int(s.size)
+        outer_block = _outer_block_para_app(n)
+        if outer_block is None:
+            return dbc.Alert(
+                "La serie tiene {} observaciones; se requieren al menos {} para "
+                "el protocolo honesto de comparacion externa (bloque de "
+                "entrenamiento + tuning + evaluacion + bloque externo).".format(
+                    n, 22 + 2), color="warning")
+
+        try:
+            out = honest_outer_estimate(s, m=12, outer_block=outer_block)
+        except Exception as exc:
+            logger.exception("Fallo honest_outer_estimate en la comparacion externa")
+            return dbc.Alert("Error al evaluar la Herramienta: {}".format(exc), color="danger")
+        if not out.get("ok"):
+            return dbc.Alert("No se pudo evaluar: {}".format(out.get("reason", "")), color="warning")
+
+        outer = out["outer"]
+        origins = outer.origins
+        y = s.to_numpy(dtype=float)
+        scale_train = y[: origins[0]]
+        m_eff = outer.m
+        winner = out["winner"]
+
+        filas = []
+        outer_metrics = out["outer_metrics"].set_index("modelo")
+        for metodo, etiqueta in (("naive", "Naive"), ("seasonal_naive", "Naive estacional"),
+                                 (winner, "Herramienta ({})".format(winner))):
+            if metodo in outer_metrics.index and bool(outer_metrics.loc[metodo, "elegible"]):
+                r = outer_metrics.loc[metodo]
+                filas.append({"Metodo": etiqueta, "MASE": r["mase"], "MAPE (%)": r["mape"],
+                             "MAD": r["mad"], "MSE": r["mse"], "ME": r["me"]})
+
+        h = int(horizon or 12)
+        future_index = pd.date_range(s.index[-1] + pd.offsets.MonthBegin(1), periods=h, freq="MS")
+        fig = go.Figure()
+        fig.add_trace(go.Scatter(x=s.index, y=s.values, mode="lines+markers",
+                                 name="Demanda (historico)", line=dict(color="royalblue")))
+        fig.add_vline(x=s.index[-1], line_dash="dot", line_width=1, line_color="rgba(0,0,0,0.25)")
+
+        colores = {"ext_prophet": "#B34700", "ext_lightgbm": "#6A3D9A"}
+        for key, spec in specs.items():
+            short = key.replace("ext_", "")
+            try:
+                bt = backtest_one_step(y, spec, None, 12, origins)
+                if bt.complete:
+                    ms = compute_metrics(bt.y_true, bt.y_pred, scale_train, m=m_eff)
+                    filas.append({"Metodo": short.capitalize(), "MASE": ms.mase,
+                                 "MAPE (%)": ms.mape, "MAD": ms.mad, "MSE": ms.mse, "ME": ms.me})
+                else:
+                    filas.append({"Metodo": short.capitalize(), "MASE": None, "MAPE (%)": None,
+                                 "MAD": None, "MSE": None, "ME": None})
+                fc = spec.forecast(y, params=None, h=h, m=12)
+                fig.add_trace(go.Scatter(x=future_index, y=fc, mode="lines+markers",
+                                         name="Pronostico {} (+{}m)".format(short, h),
+                                         line=dict(color=colores.get(key, "gray"))))
+            except Exception as exc:
+                logger.warning("Comparacion externa: %s fallo: %s", key, exc)
+                filas.append({"Metodo": short.capitalize(), "MASE": None, "MAPE (%)": None,
+                             "MAD": None, "MSE": None, "ME": None})
+
+        try:
+            spec_win = get_spec(winner)
+            fc_win = spec_win.forecast(y, params=out["params"], h=h, m=12)
+            fig.add_trace(go.Scatter(x=future_index, y=fc_win, mode="lines+markers",
+                                     name="Pronostico herramienta (+{}m)".format(h),
+                                     line=dict(color="seagreen")))
+        except Exception as exc:
+            logger.warning("Comparacion externa: pronostico de la herramienta fallo: %s", exc)
+
+        fig.update_layout(
+            title="Comparacion externa — historico + pronostico a {} meses".format(h),
+            xaxis_title="Fecha", yaxis_title="Demanda",
+            margin=dict(l=10, r=10, t=60, b=10), height=420,
+            legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="left", x=0),
+        )
+
+        df_tabla = pd.DataFrame(filas).round(3)
+        tabla = dash_table.DataTable(
+            data=df_tabla.to_dict("records"),
+            columns=[{"name": c, "id": c} for c in df_tabla.columns],
+            style_header={"backgroundColor": "#f8f9fa", "fontWeight": "bold"},
+            page_size=len(df_tabla) or 1,
+        )
+        nota = html.P(
+            "Metricas calculadas sobre el bloque EXTERNO ({} origenes) que ni la "
+            "seleccion de hiperparametros ni la seleccion del metodo ganador de la "
+            "Herramienta vieron -mismo protocolo para los tres metodos (F26).".format(
+                origins.size),
+            className="text-muted small mt-2",
+        )
+        return html.Div([dcc.Graph(figure=fig, style={"height": "420px"}), tabla, nota])
 
 
 if __name__ == "__main__":
