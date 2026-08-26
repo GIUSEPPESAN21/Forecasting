@@ -21,7 +21,16 @@ derivada, y comparación opcional contra Prophet y LightGBM.
   <a href="#los-cinco-módulos-de-la-aplicación"><b>🖥️ Los 5 módulos</b></a> ·
   <a href="#estructura-del-repositorio"><b>📁 Estructura</b></a> ·
   <a href="#reproducir-los-resultados-del-manuscrito"><b>📊 Reproducir el paper</b></a> ·
-  <a href="docs/MANUAL_USUARIO.md"><b>📘 Manual completo</b></a>
+  <a href="docs/MANUAL_USUARIO.md"><b>📘 Manual completo</b></a> ·
+  <a href="https://claude.ai/code/artifact/a21b0535-737c-4cad-93f3-3887f4cbaa46"><b>🎮 Simulador interactivo</b></a>
+</p>
+
+<p align="center">
+  <a href="https://claude.ai/code/artifact/a21b0535-737c-4cad-93f3-3887f4cbaa46">
+    <b>🎯 Pruebe en vivo por qué separar tune / evaluación / bloque externo →</b>
+  </a>
+  <br>
+  <sub>Dos widgets con sliders reales: el simulador de bloque externo y una calculadora de MASE — sin instalar nada.</sub>
 </p>
 
 ---
@@ -37,6 +46,7 @@ forma independiente; toda la interfaz interactiva es una capa delgada sobre él.
 
 - [Inicio rápido](#inicio-rápido)
 - [Cómo funciona el pipeline](#cómo-funciona-el-pipeline)
+- [🎮 Simulador interactivo](#simulador-interactivo)
 - [Estructura del repositorio](#estructura-del-repositorio)
 - [Los cinco módulos de la aplicación](#los-cinco-módulos-de-la-aplicación)
 - [Instalación](#instalación)
@@ -63,6 +73,14 @@ Abra `http://127.0.0.1:8050` en el navegador. En el **Módulo 1** presione
 sin preparar ningún archivo. Detalle completo, columna por columna y módulo
 por módulo, en el **[manual de usuario](docs/MANUAL_USUARIO.md)**.
 
+- [x] Clonar el repositorio e instalar `requirements.txt`
+- [x] Correr `python codigo/app.py` y abrir `http://127.0.0.1:8050`
+- [ ] Presionar **"Cargar datos de ejemplo"** en el Módulo 1
+- [ ] Revisar el método ganador en el [Módulo 2](#modulo-2) y el pronóstico del [Módulo 3](#modulo-3)
+- [ ] *(Opcional)* Instalar [`requirements-external.txt`](requirements-external.txt) para el [Módulo 5](#modulo-5)
+
+<p align="right"><a href="#índice">↑ Índice</a></p>
+
 ## Cómo funciona el pipeline
 
 Regla de oro de todo el proyecto: **ninguna métrica se reporta jamás
@@ -83,6 +101,34 @@ Cada nodo del diagrama es un módulo real de `python codigo/app.py` (ver
 [Los cinco módulos](#los-cinco-módulos-de-la-aplicación) abajo). El Módulo 5
 es opcional: solo se activa si instaló
 [`requirements-external.txt`](requirements-external.txt).
+
+<p align="right"><a href="#índice">↑ Índice</a></p>
+
+## Simulador interactivo
+
+**[🎯 Abrir el simulador →](https://claude.ai/code/artifact/a21b0535-737c-4cad-93f3-3887f4cbaa46)**
+— dos widgets en vivo, sin instalar nada, que hacen tangible la regla de oro
+de arriba:
+
+- **Bloque externo**: mueva un slider de "meses de historia" y alterne entre
+  *"antes · circular"* y *"ahora · honesto"* — vea cómo el protocolo viejo
+  usa el 100% del historial para elegir Y evaluar (nunca puede perder contra
+  sí mismo), contra el reparto real en tune / eval / bloque externo que usa
+  `honest_outer_estimate()`.
+- **Calculadora de MASE**: dos sliders (su error vs. el del naive
+  estacional) con veredicto instantáneo — la misma métrica primaria que usa
+  el Módulo 2 de la app.
+
+```
+ antes (circular)      ████████████████████████████████████  ← todo el mismo bloque
+ ahora (honesto)       ██████████████░░░░░░░░▓▓▓▓  tune · eval · 🏆 externo (se reporta)
+```
+
+> Nota: el simulador se publicó como un Artifact privado; si el enlace le
+> pide acceso, puede deberse a que el propietario aún no lo compartió — vea
+> [Los cinco módulos](#los-cinco-módulos-de-la-aplicación) mientras tanto.
+
+<p align="right"><a href="#índice">↑ Índice</a></p>
 
 ## Estructura del repositorio
 
@@ -125,6 +171,8 @@ requirements-external.txt        Opcional: Prophet + LightGBM (ver Módulo 5)
 CHANGELOG.md                     Cada corrección, citada por ID de hallazgo (F01-F29)
 RESUMEN_EJECUCION.md             Estado final de cada hallazgo, con evidencia
 ```
+
+<p align="right"><a href="#índice">↑ Índice</a></p>
 
 ## Los cinco módulos de la aplicación
 
@@ -200,6 +248,8 @@ muestra deshabilitado y **el resto de la app funciona exactamente igual**.
 📘 [Ver el detalle completo del Módulo 5 →](docs/MANUAL_USUARIO.md#módulo-5--comparación-externa-prophet--lightgbm)
 </details>
 
+<p align="right"><a href="#índice">↑ Índice</a></p>
+
 ## Instalación
 
 ```bash
@@ -230,6 +280,8 @@ exactamente igual (el Módulo 5 queda deshabilitado con un aviso, y
 [`decision_prophet.md`](codigo/experimentos/decision_prophet.md) para la
 justificación completa de por qué estos paquetes viven aislados.
 
+<p align="right"><a href="#índice">↑ Índice</a></p>
+
 ## Ejecutar la aplicación
 
 ```bash
@@ -242,6 +294,8 @@ Por defecto corre en modo producción (`debug=False`). Para depurar:
 variable `PORT` (por defecto `8050`) — ver el
 [manual](docs/MANUAL_USUARIO.md#2-arrancar-la-aplicación) para los tres
 formatos de shell.
+
+<p align="right"><a href="#índice">↑ Índice</a></p>
 
 ## Ejecutar las pruebas
 
@@ -260,13 +314,19 @@ selección de hiperparámetros, carga robusta de datos, memoria acotada del
 procesamiento por lotes, y los adaptadores externos del Módulo 5 (se saltan
 automáticamente sin `requirements-external.txt`). Estado actual: **266
 pruebas, 265 passed, 1 skip preexistente sin relación con la Fase 11, 0
-failed** — detalle en `CHANGELOG.md`, sección "Fase 11".
+failed** — detalle en
+[`CHANGELOG.md`, sección "Fase 11"](CHANGELOG.md#fase-11--comparación-externa-prophet--lightgbm-gráficos-manual-e-interactividad).
+
+<p align="right"><a href="#índice">↑ Índice</a></p>
 
 ## Reproducir los resultados del manuscrito
 
 Cada cifra cuantitativa de `manuscritos/articulo_mdpi/template.tex` proviene de
 uno de estos scripts, ejecutable con un solo comando y semilla fija. Todos
-escriben directamente en `resultados/`:
+escriben directamente en `resultados/`.
+
+<details>
+<summary><b>Ver los 8 comandos, uno por sección del manuscrito</b></summary>
 
 ```bash
 # Validación Monte Carlo de la clasificación estructural (Sección 2.3 del manuscrito)
@@ -302,11 +362,18 @@ python codigo/experimentos/make_figures_comparativa.py
 | `make_figures.py` | `flowchart_tool.png`, `fig2_forecast_caso.png` | Metodología (Fig. 1), Caso ilustrativo (Fig. 2) |
 | `make_figures_comparativa.py` | `fig_c1_boxplot_mase.png`, `fig_c2_mase_vs_longitud.png`, `fig_c3_panel_regimenes.png` | Comparación externa (Fase 12, pendiente de incorporar al manuscrito — ver `resultados/comparativa_externa.csv`) |
 
+</details>
+
+<p align="right"><a href="#índice">↑ Índice</a></p>
+
 ## Resultados versionados
 
 A diferencia de un `.gitignore` que oculta toda salida de experimentos, los
 CSV y logs finales usados en el manuscrito **sí están versionados** en
 `resultados/`, como evidencia trazable de cada cifra publicada:
+
+<details>
+<summary><b>Ver el contenido de <code>resultados/</code></b></summary>
 
 ```
 resultados/
@@ -322,9 +389,13 @@ resultados/
   logs/                             transcripciones de consola de cada corrida
 ```
 
+</details>
+
 Solo se excluye del control de versiones `codigo/experimentos/m3cache/`: el
 caché del dataset público M3 descargado automáticamente por
 `panel_publico.py` (reproducible desde su fuente original, no autorado).
+
+<p align="right"><a href="#índice">↑ Índice</a></p>
 
 ## Procesamiento por lotes (multi-SKU)
 
@@ -349,6 +420,8 @@ acumula el portafolio completo en memoria (ver
 `codigo/tests/test_batch_memory.py`). Detalle de todas las opciones en el
 [manual de usuario](docs/MANUAL_USUARIO.md#5-procesar-muchos-productos-a-la-vez-batch_clipy).
 
+<p align="right"><a href="#índice">↑ Índice</a></p>
+
 ## Limitaciones conocidas
 
 - Modelos univariados: no incorpora variables exógenas (p. ej. cartera
@@ -358,9 +431,11 @@ acumula el portafolio completo en memoria (ver
   como reemplazo directo del panel sintético.
 - Con menos de ~36 observaciones mensuales la estacionalidad no es
   identificable de forma confiable (ver `codigo/forecasting_core/classification.py`).
-- El Módulo 5 (Prophet/LightGBM) es una línea base de comparación, no un
-  modelo optimizado: ninguno de los dos recibió ajuste fino de
-  hiperparámetros (ver [`decision_prophet.md`](codigo/experimentos/decision_prophet.md)).
+- El [Módulo 5](#modulo-5) (Prophet/LightGBM) es una línea base de
+  comparación, no un modelo optimizado: ninguno de los dos recibió ajuste
+  fino de hiperparámetros (ver [`decision_prophet.md`](codigo/experimentos/decision_prophet.md)).
+
+<p align="right"><a href="#índice">↑ Índice</a></p>
 
 ## Licencia
 
