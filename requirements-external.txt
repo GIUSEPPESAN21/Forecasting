@@ -1,0 +1,16 @@
+# Dependencias OPCIONALES de la Fase 11 (F27): comparadores externos Prophet
+# y LightGBM, aislados en codigo/external_baselines/. NO se instalan como
+# parte de requirements.txt: el nucleo (forecasting_core) y la app interactiva
+# (codigo/app.py) funcionan sin este archivo -ver el import guard en
+# codigo/app.py y `codigo/external_baselines/__init__.py`.
+#
+# Instalacion:
+#   pip install -r requirements-external.txt
+#
+# Versiones fijadas con las que se genero resultados/comparativa_externa.csv
+# (2026-08-25), para que el proximo auditor no tenga que reconciliar nada
+# (mismo criterio que requirements.txt, ver su encabezado).
+prophet==1.4.0
+cmdstanpy==1.3.0
+mlforecast==1.1.0
+lightgbm==4.7.0

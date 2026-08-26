@@ -66,3 +66,52 @@ identico al de `statsforecast` en `forecasting_core/models.py`: una funcion
 documentarse version, configuracion (`seasonality_mode`, `changepoint_prior_scale`,
 etc.), las series usadas y el codigo debe vivir en el repositorio -exactamente
 el estandar que esta decision aplica a todo lo demas.
+
+## Actualizacion — Fase 11 (2026-08-25): Prophet reincorporado, AISLADO
+
+Los tutores del proyecto pidieron explicitamente (25/08/2026) una comparacion
+cuantitativa contra Prophet y "otro pronosticador famoso" (se eligio
+LightGBM, ganador historico de la competencia M5, via `mlforecast`), con
+evidencia adjunta (`docs/comparacion_herramientas.pdf`) de que la comparacion
+manual existente mezclaba protocolos de evaluacion distintos (hallazgo F26).
+Esta actualizacion NO revierte la decision de arriba: los dos argumentos que
+retiraron Prophet del *manuscrito* siguen vigentes para la **aplicacion
+interactiva** (`codigo/app.py`) y para el **nucleo** (`forecasting_core/`):
+
+1. Prophet sigue sin ser el comparador mas relevante segun la literatura de
+   M4 para series cortas -eso no cambio.
+2. Prophet sigue costando una dependencia pesada (backend Stan/cmdstanpy)
+   frente al presupuesto de RAM de la sesion interactiva de la Fase 1 -por
+   eso, en esta actualizacion, Prophet y LightGBM viven en un paquete HERMANO
+   aislado (`codigo/external_baselines/`), con imports perezosos y una
+   dependencia opcional separada (`requirements-external.txt`), y **no**
+   entran a `MODEL_REGISTRY` ni a `requirements.txt`. `forecasting_core` y
+   `codigo/app.py` siguen funcionando identico sin este paquete instalado
+   (ver el import guard en `codigo/app.py`, Modulo 5).
+
+Lo que SI cambia: para el **manuscrito** (Fase 12, pendiente), ahora existe
+`codigo/experimentos/comparativa_externa.py`, que reincorpora Prophet y
+LightGBM como comparadores bajo el MISMO protocolo honesto de tres bloques
+(tune/eval/outer, `honest_outer_estimate`) que ya usa el resto del proyecto
+-resolviendo exactamente el defecto que motivo el retiro original en F08 (sin
+protocolo, sin datos, sin codigo). Ver `resultados/comparativa_externa.csv` y
+`resultados/logs/comparativa_externa.log` para el resultado real.
+
+### Estado de instalacion verificado en este entorno (2026-08-25)
+
+- `lightgbm==4.7.0` y `mlforecast==1.1.0`: instalacion estandar via pip, sin
+  bloqueo. Funcionan de inmediato (wheels precompilados).
+- `prophet==1.4.0` / `cmdstanpy==1.3.0`: instalacion via pip tambien sin
+  bloqueo en este entorno (Windows, Python 3.11.9) -el wheel de Prophet para
+  Windows trae lo necesario para que `Prophet().fit()` funcione sin requerir
+  compilar manualmente. **Nota para el proximo auditor**: un intento manual
+  de `cmdstanpy.install_cmdstan()` fallo en este mismo entorno por falta de
+  `mingw32-make` (sin toolchain de C++ instalado), pero Prophet igual quedo
+  operativo end-to-end (12 pruebas en
+  `codigo/tests/test_external_baselines.py`, incluida la de no-fuga
+  temporal, pasan con ambos paquetes instalados). Si en OTRO entorno esa
+  ruta automatica fallara, la contingencia sigue siendo la misma que preveia
+  el prompt de la Fase 11: documentar el bloqueo exacto aqui y continuar con
+  el comparador que si funcione (`comparativa_externa.py` no se bloquea por
+  un solo paquete faltante: usa `external_baselines.external_specs()`, que
+  se degrada con gracia).

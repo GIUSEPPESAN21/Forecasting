@@ -1,0 +1,92 @@
+Comparadores externos disponibles: ext_lightgbm, ext_prophet
+  [  1/ 50] n= 24 regimen=plano                  -> ok
+  [  2/ 50] n= 24 regimen=tendencia              -> ok
+  [  3/ 50] n= 24 regimen=estacional             -> ok
+  [  4/ 50] n= 24 regimen=tendencia_estacional   -> ok
+  [  5/ 50] n= 24 regimen=corta_erratica         -> ok
+  [  6/ 50] n= 36 regimen=plano                  -> ok
+  [  7/ 50] n= 36 regimen=tendencia              -> ok
+  [  8/ 50] n= 36 regimen=estacional             -> ok
+  [  9/ 50] n= 36 regimen=tendencia_estacional   -> ok
+  [ 10/ 50] n= 36 regimen=corta_erratica         -> ok
+  [ 11/ 50] n= 48 regimen=plano                  -> ok
+  [ 12/ 50] n= 48 regimen=tendencia              -> ok
+  [ 13/ 50] n= 48 regimen=estacional             -> ok
+  [ 14/ 50] n= 48 regimen=tendencia_estacional   -> ok
+  [ 15/ 50] n= 48 regimen=corta_erratica         -> ok
+  [ 16/ 50] n= 60 regimen=plano                  -> ok
+  [ 17/ 50] n= 60 regimen=tendencia              -> ok
+  [ 18/ 50] n= 60 regimen=estacional             -> ok
+  [ 19/ 50] n= 60 regimen=tendencia_estacional   -> ok
+  [ 20/ 50] n= 60 regimen=corta_erratica         -> ok
+  [ 21/ 50] n= 72 regimen=plano                  -> ok
+  [ 22/ 50] n= 72 regimen=tendencia              -> ok
+  [ 23/ 50] n= 72 regimen=estacional             -> ok
+  [ 24/ 50] n= 72 regimen=tendencia_estacional   -> ok
+  [ 25/ 50] n= 72 regimen=corta_erratica         -> ok
+  [ 26/ 50] n= 84 regimen=plano                  -> ok
+  [ 27/ 50] n= 84 regimen=tendencia              -> ok
+  [ 28/ 50] n= 84 regimen=estacional             -> ok
+  [ 29/ 50] n= 84 regimen=tendencia_estacional   -> ok
+  [ 30/ 50] n= 84 regimen=corta_erratica         -> ok
+  [ 31/ 50] n= 96 regimen=plano                  -> ok
+  [ 32/ 50] n= 96 regimen=tendencia              -> ok
+  [ 33/ 50] n= 96 regimen=estacional             -> ok
+  [ 34/ 50] n= 96 regimen=tendencia_estacional   -> ok
+  [ 35/ 50] n= 96 regimen=corta_erratica         -> ok
+  [ 36/ 50] n=120 regimen=plano                  -> ok
+  [ 37/ 50] n=120 regimen=tendencia              -> ok
+  [ 38/ 50] n=120 regimen=estacional             -> ok
+  [ 39/ 50] n=120 regimen=tendencia_estacional   -> ok
+  [ 40/ 50] n=120 regimen=corta_erratica         -> ok
+  [ 41/ 50] n=150 regimen=plano                  -> ok
+  [ 42/ 50] n=150 regimen=tendencia              -> ok
+  [ 43/ 50] n=150 regimen=estacional             -> ok
+  [ 44/ 50] n=150 regimen=tendencia_estacional   -> ok
+  [ 45/ 50] n=150 regimen=corta_erratica         -> ok
+  [ 46/ 50] n=180 regimen=plano                  -> ok
+  [ 47/ 50] n=180 regimen=tendencia              -> ok
+  [ 48/ 50] n=180 regimen=estacional             -> ok
+  [ 49/ 50] n=180 regimen=tendencia_estacional   -> ok
+  [ 50/ 50] n=180 regimen=corta_erratica         -> ok
+
+============================================================================================
+COMPARATIVA EXTERNA -- 50 celdas (50 ok, 0 sin resultado valido) -- 734.6s
+============================================================================================
+
+MASE mediano por metodo y por regimen estructural:
+                      herramienta_mase  naive_mase  seasonal_naive_mase  prophet_mase  lightgbm_mase
+regimen                                                                                             
+corta_erratica                   1.031       1.303                0.964         0.989          0.934
+estacional                       0.732       1.352                1.072         0.799          0.901
+plano                            0.761       0.981                1.090         0.876          0.738
+tendencia                        0.699       0.825                1.362         0.772          1.062
+tendencia_estacional             0.633       1.054                0.920         0.650          0.795
+
+MASE mediano por metodo y por longitud de serie:
+     herramienta_mase  naive_mase  seasonal_naive_mase  prophet_mase  lightgbm_mase
+n                                                                                  
+24              0.909       0.915                1.084         0.948          0.798
+36              0.747       1.115                0.749         1.168          0.886
+48              0.962       1.214                1.096         1.254          1.246
+60              0.860       1.053                0.978         0.932          1.200
+72              0.622       1.055                0.924         0.602          0.840
+84              0.751       1.566                1.127         0.688          0.841
+96              0.642       0.956                0.917         0.670          0.903
+120             0.613       0.938                1.121         0.696          0.388
+150             0.680       1.240                1.175         0.779          0.886
+180             0.733       1.187                0.821         0.902          0.994
+
+MASE mediano por metodo (global, 50 series):
+  herramienta_mase           mediana=0.747  media=0.792  n=50
+  naive_mase                 mediana=1.070  media=1.112  n=50
+  seasonal_naive_mase        mediana=1.084  media=1.084  n=50
+  prophet_mase               mediana=0.785  media=0.867  n=50
+  lightgbm_mase              mediana=0.893  media=0.927  n=50
+
+La Herramienta supera a prophet en 64% de las 50 series comparables (MASE menor = mejor).
+
+La Herramienta supera a lightgbm en 72% de las 50 series comparables (MASE menor = mejor).
+
+CSV: C:\Users\LENOVO\OneDrive - uniminuto.edu\UNIANDES Research Projects\RESEARCH INVITADOS PROFE LUIS-DAVID\Forecasting\resultados\comparativa_externa.csv
+Tiempo total: 734.6s (50 celdas evaluadas)

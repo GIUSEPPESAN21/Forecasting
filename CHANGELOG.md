@@ -189,6 +189,79 @@ resuelve y el archivo donde vive la corrección.
   memoria del lote e intervalos/inventario. Ver `RESUMEN_EJECUCION.md` para
   el conteo final.
 
+## Fase 11 — Comparación externa (Prophet / LightGBM), gráficos, manual e interactividad
+
+Fase aditiva sobre el refactor 2.0.0: instrucción directa de los tutores del
+proyecto (25/08/2026), documentada en `docs/prompt_maestro.md` de esta fase.
+No reabre ni edita F01-F25; la única excepción declarada de antemano
+(hook en `optimize.py`) resultó innecesaria y se documenta por qué en
+`codigo/external_baselines/adapters.py`.
+
+- **F26** — `comparacion_herramientas.pdf` (adjunto por los tutores) mezclaba
+  el MAPE walk-forward interno de la Herramienta con métricas de Prophet
+  sobre un holdout aparte, con `yearly_seasonality` de Prophet activada de
+  forma incondicional incluso en n=24 (MAPE=353.98%, pronósticos negativos).
+  Documentado en `codigo/experimentos/comparativa_externa.py` (docstring) y
+  `codigo/experimentos/decision_prophet.md`. Verificado por
+  `codigo/tests/test_external_baselines.py::TestProphetAdapter::test_yearly_seasonality_threshold_documented`.
+- **F27** — Nuevo paquete `codigo/external_baselines/` (Prophet, LightGBM vía
+  `mlforecast`), HERMANO de `forecasting_core/`, con imports perezosos y
+  dependencias propias en `requirements-external.txt`. `PROPHET_SPEC`/
+  `LIGHTGBM_SPEC` (`external_baselines/adapters.py`) son instancias REALES de
+  `forecasting_core.models.ModelSpec`, no un duck-type, y se pasan sin
+  ninguna modificación a `forecasting_core.validation.walk_forward`/
+  `backtest_one_step` — el "hook aditivo" que el prompt de la Fase 11
+  anticipaba para `optimize.py` resultó innecesario (razón documentada en el
+  docstring de `adapters.py`) porque `comparativa_externa.py` evalúa Prophet/
+  LightGBM directamente sobre el bloque EXTERNO que `honest_outer_estimate`
+  ya reservó para la Herramienta, el mismo patrón que
+  `experimentos/vs_incumbente.py` ya usa para el incumbente.
+  `forecasting_core/optimize.py` **no se modificó**. Nuevo experimento
+  `codigo/experimentos/comparativa_externa.py`: 10 longitudes (24-180) x 5
+  regímenes estructurales, protocolo único de tres bloques para los tres
+  métodos, salida en `resultados/comparativa_externa.csv` +
+  `resultados/logs/comparativa_externa.log`. Verificado por
+  `codigo/tests/test_external_baselines.py` (12 pruebas: forma/finitud del
+  pronóstico, piso de no-negatividad F21 duplicado correctamente, historia
+  insuficiente, no-fuga temporal con perturbación programática — mismo
+  criterio que `test_no_leakage.py` — y compatibilidad `ModelSpec` real con
+  `walk_forward`); se saltan automáticamente si `prophet`/`mlforecast`/
+  `lightgbm` no están instalados (`pytest.importorskip` por clase, vía
+  fixture `autouse`, no en el cuerpo de la clase, para que la ausencia de un
+  solo paquete no aborte la colección de las demás clases del archivo).
+- **F28** — Nuevo `codigo/experimentos/make_figures_comparativa.py` (archivo
+  separado de `make_figures.py`, que no se toca): `fig_c1_boxplot_mase.png`
+  (distribución de MASE por método), `fig_c2_mase_vs_longitud.png`
+  (precisión vs. longitud de serie, un color por método),
+  `fig_c3_panel_regimenes.png` (pequeños múltiplos: histórico + pronóstico
+  de los tres métodos a la vez, 4 regímenes representativos — formato dual
+  inspirado en el PDF de los tutores, pero con los tres métodos juntos y
+  protocolo correcto). Tabla de reproducibilidad actualizada en `README.md`.
+- **F29** — `docs/MANUAL_USUARIO.md`: manual de uso completo (instalación,
+  los cinco módulos, exportación, `batch_cli.py`, preguntas frecuentes), sin
+  requerir lectura de código. Modo demo en `codigo/app.py` Módulo 1: botón
+  "Cargar datos de ejemplo" (`cargar_datos_demo`, un callback adicional con
+  `allow_duplicate=True` sobre los mismos cuatro `Output` que
+  `validar_y_mostrar`; ambos comparten el render vía `_procesar_carga()`,
+  extraído sin alterar la lógica de `load_series`). Módulo 5 nuevo en
+  `codigo/app.py`, "Comparación externa (Prophet / LightGBM)": import guard
+  con `external_baselines.PROPHET_AVAILABLE`/`LIGHTGBM_AVAILABLE` (probados
+  con `importlib.util.find_spec`, sin importar los paquetes pesados de
+  verdad, para no gastar el presupuesto de RAM de la sesión interactiva si
+  el módulo está deshabilitado); si ninguno está instalado, la sección
+  muestra un aviso y el callback ni siquiera se registra. Los Módulos 1-4
+  existentes no cambiaron de comportamiento, orden ni callbacks — verificado
+  importando `app.py` con y sin los paquetes opcionales simulados presentes/
+  ausentes (`importlib.util.find_spec` monkeypatcheado) antes de esta
+  entrada del changelog.
+- `requirements-external.txt` (nuevo, versiones fijadas: `prophet==1.4.0`,
+  `cmdstanpy==1.3.0`, `mlforecast==1.1.0`, `lightgbm==4.7.0`) — NO se agregó
+  nada a `requirements.txt` ni a `MODEL_REGISTRY` (restricción explícita del
+  prompt de la Fase 11, §6).
+- No regresión: la suite `pytest` original (ver conteo en
+  `RESUMEN_EJECUCION.md`) sigue en verde sin cambios; las 12 pruebas nuevas
+  de `test_external_baselines.py` son la única adición a `codigo/tests/`.
+
 ### Notas de reconciliación
 - Ambas auditorías independientes, ejecutando el código original con
   versiones de librería ligeramente distintas, obtuvieron tamaños de
