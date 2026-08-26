@@ -1,9 +1,11 @@
 # Manual de usuario — Motor de Pronósticos Tuboplex
 
+[⬅ Volver al README](../README.md) · [Índice del manual](#índice)
+
 Este manual explica cómo instalar y usar la herramienta **sin necesidad de
 leer el código**. Si busca el detalle técnico de qué se corrigió y por qué,
-vea `CHANGELOG.md` y `RESUMEN_EJECUCION.md`; este documento es solo para usar
-la aplicación.
+vea [`CHANGELOG.md`](../CHANGELOG.md) y [`RESUMEN_EJECUCION.md`](../RESUMEN_EJECUCION.md);
+este documento es solo para usar la aplicación.
 
 ## Índice
 
@@ -77,7 +79,7 @@ Arriba de todo hay una zona para arrastrar o seleccionar un archivo Excel
 Si tiene varios productos en el mismo archivo, agregue una cuarta columna
 `sku` con el nombre o código de cada producto (la app analiza un producto por
 vez; para varios productos de una sola corrida, use el
-[procesamiento por lotes](#5-procesar-muchos-productos-a-la-vez-batch_cliipy)).
+[procesamiento por lotes](#5-procesar-muchos-productos-a-la-vez-batch_clipy)).
 
 **¿No tiene un Excel a mano?** Use el botón **"Cargar datos de ejemplo"**,
 justo debajo de la zona de arrastre: carga una serie sintética de 48 meses
@@ -104,6 +106,8 @@ Después de cargar, la app le muestra:
 Se requieren **al menos 18 observaciones** (meses) para continuar: con menos
 no hay forma honesta de validar ningún método.
 
+> ➡ Siguiente: [Módulo 2 — Clasificación y evaluación de métodos](#módulo-2--clasificación-y-evaluación-de-métodos)
+
 ### Módulo 2 — Clasificación y evaluación de métodos
 
 Se ejecuta solo, apenas el Módulo 1 valida una serie. Muestra:
@@ -129,6 +133,8 @@ Se ejecuta solo, apenas el Módulo 1 valida una serie. Muestra:
 No necesita hacer nada en este módulo salvo leer el resultado; el método
 ganador pasa automáticamente al Módulo 3.
 
+> ➡ Siguiente: [Módulo 3 — Pronóstico con intervalos](#módulo-3--pronóstico-con-intervalos)
+
 ### Módulo 3 — Pronóstico con intervalos
 
 Elija:
@@ -141,6 +147,8 @@ La gráfica muestra el histórico, el pronóstico (línea verde) y la banda
 sombreada del intervalo elegido. La tabla debajo tiene los mismos números:
 pronóstico, límites inferior/superior, sigma del error y sesgo estimado por
 mes. El pronóstico nunca es negativo (se recorta en cero automáticamente).
+
+> ➡ Siguiente: [Módulo 4 — Política de inventario](#módulo-4--política-de-inventario)
 
 ### Módulo 4 — Política de inventario
 
@@ -162,6 +170,8 @@ Si el sesgo del pronóstico (ME) es grande frente a su variabilidad, la app
 muestra un aviso explícito — es una señal de que el modelo está
 sistemáticamente sobre o subestimando, y el punto de reorden debería
 revisarse con más frecuencia.
+
+> ➡ Siguiente (opcional): [Módulo 5 — Comparación externa](#módulo-5--comparación-externa-prophet--lightgbm)
 
 ### Módulo 5 — Comparación externa (Prophet / LightGBM)
 
@@ -265,5 +275,10 @@ original** — Ese es el contenido de `CHANGELOG.md` y `RESUMEN_EJECUCION.md`
 en la raíz del repositorio; este manual solo cubre el uso de la aplicación.
 
 **Quiero reproducir las cifras del manuscrito académico** — Vea la sección
-"Reproducir los resultados del manuscrito" del `README.md`: cada cifra sale
-de un script en `codigo/experimentos/`, ejecutable con un solo comando.
+["Reproducir los resultados del manuscrito"](../README.md#reproducir-los-resultados-del-manuscrito)
+del `README.md`: cada cifra sale de un script en `codigo/experimentos/`,
+ejecutable con un solo comando.
+
+---
+
+[↑ Volver al índice del manual](#índice) · [⬅ Volver al README](../README.md)
