@@ -194,6 +194,19 @@ def evaluate_series(sku: str, s: pd.Series, m: int = 12, outer_block: int = 6) -
     }
 
 
+def wtl_breakdown(df: pd.DataFrame, col_a: str, col_b: str) -> dict:
+    """Victorias/empates/derrotas de `col_a` vs. `col_b` (menor MASE = victoria).
+
+    F34: extraido a funcion pura -antes vivia inline en `run()`- para poder
+    probarlo con un caso de resultado conocido a mano.
+    """
+    comp = df.dropna(subset=[col_a, col_b])
+    victorias = int((comp[col_a] < comp[col_b]).sum())
+    empates = int((comp[col_a] == comp[col_b]).sum())
+    derrotas = int((comp[col_a] > comp[col_b]).sum())
+    return {"n": len(comp), "victorias": victorias, "empates": empates, "derrotas": derrotas}
+
+
 def diebold_mariano(e1: np.ndarray, e2: np.ndarray, h: int = 1) -> tuple[float, float]:
     """DM sobre perdida cuadratica, con correccion de Harvey-Leybourne-Newbold.
 
@@ -263,8 +276,48 @@ def run(panel: pd.DataFrame, m: int, label: str) -> pd.DataFrame:
         df["supera_incumbente"].mean()))
     print("  Series donde la herramienta supera al naive      : {}/{} ({:.0%})".format(
         df["supera_naive"].sum(), df["supera_naive"].notna().sum(), df["supera_naive"].mean()))
-    print("  Mejora mediana de MASE vs. incumbente: {:+.1f}%".format(
-        df["mejora_vs_incumbente_pct"].median()))
+    mejora_mediana_por_serie = df["mejora_vs_incumbente_pct"].median()
+    mase_med_h = df["herramienta_mase"].median()
+    mase_med_i = df["incumbente_mase"].median()
+    mejora_de_medianas = 100.0 * (mase_med_i - mase_med_h) / mase_med_i if mase_med_i > 0 else float("nan")
+    print("  Mejora mediana de MASE por serie vs. incumbente (mediana de las mejoras "
+          "individuales): {:+.1f}%".format(mejora_mediana_por_serie))
+    print("  Mejora de las medianas (MASE mediano incumbente -> herramienta, {:.3f} -> {:.3f}): "
+          "{:+.1f}%  (dato complementario -no intercambiable con el anterior, F46)".format(
+              mase_med_i, mase_med_h, mejora_de_medianas))
+
+    # F34: desglose victorias/empates/derrotas de la herramienta contra naive.
+    # Empate = la herramienta ELIGIO naive como ganador (herramienta_metodo ==
+    # "naive"), por lo que herramienta_mase == naive_mase por construccion.
+    wtl = wtl_breakdown(df, "herramienta_mase", "naive_mase")
+    victorias_n, empates_n, derrotas_n = wtl["victorias"], wtl["empates"], wtl["derrotas"]
+    print("\n  Desglose herramienta vs. naive (n={}): {} victorias, {} empates "
+          "(eligio naive), {} derrotas".format(wtl["n"], victorias_n, empates_n, derrotas_n))
+
+    # F34: Wilcoxon pareado herramienta vs. incumbente sobre MASE.
+    comp_inc = df.dropna(subset=["herramienta_mase", "incumbente_mase"])
+    comp_inc = comp_inc[comp_inc["herramienta_mase"] != comp_inc["incumbente_mase"]]
+    print("\n  Prueba de Wilcoxon pareada (MASE herramienta vs. MASE incumbente):")
+    if len(comp_inc) >= 10:
+        from scipy import stats
+        w_stat, w_p = stats.wilcoxon(comp_inc["herramienta_mase"], comp_inc["incumbente_mase"])
+        print("    W={:.1f}  p={:.6g}  n={} (diferencias no nulas; de {} pares totales)".format(
+            w_stat, w_p, len(comp_inc), len(df.dropna(subset=["herramienta_mase", "incumbente_mase"]))))
+    else:
+        w_stat, w_p = float("nan"), float("nan")
+        print("    n insuficiente (<10) para Wilcoxon fiable: n={}".format(len(comp_inc)))
+
+    resumen = pd.DataFrame([{
+        "n_series": len(df),
+        "mase_mediano_incumbente": mase_med_i, "mase_mediano_herramienta": mase_med_h,
+        "mejora_mediana_por_serie_pct": mejora_mediana_por_serie,
+        "mejora_de_medianas_pct": mejora_de_medianas,
+        "victorias_vs_naive": victorias_n, "empates_vs_naive": empates_n,
+        "derrotas_vs_naive": derrotas_n,
+        "wilcoxon_W_vs_incumbente": w_stat, "wilcoxon_p_vs_incumbente": w_p,
+        "wilcoxon_n_vs_incumbente": len(comp_inc),
+    }])
+    resumen.to_csv(OUT_DIR / "vs_incumbente_resumen.csv", index=False, encoding="utf-8-sig")
 
     # Diebold-Mariano agregado: se concatenan los errores de todas las series
     # de igual longitud de evaluacion para tener una sola prueba conjunta.
@@ -273,6 +326,7 @@ def run(panel: pd.DataFrame, m: int, label: str) -> pd.DataFrame:
     print("    prueba individual fiable; con pocas series el resultado es orientativo,")
     print("    no una conclusion definitiva de superioridad estadistica.")
     print(path)
+    print("Resumen:", OUT_DIR / "vs_incumbente_resumen.csv")
     return df
 
 
