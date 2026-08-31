@@ -105,11 +105,18 @@ def run(reps: int, sizes: list[int], seed: int) -> pd.DataFrame:
                 "acierto_tendencia": rate_trend,
                 "error_tendencia": 1 - rate_trend,
                 "tipo_error_tendencia": "falso positivo" if not true_trend else "falso negativo",
+                # F37: eje de analisis explicito por columna, sin depender de que
+                # quien consuma el CSV infiera "tamano vs. potencia" a partir del
+                # booleano de verdad. tamano = tasa de falso positivo (H0 cierta,
+                # se mide el nivel del test); potencia = tasa de verdadero
+                # positivo (H1 cierta, se mide la capacidad de detectarla).
+                "tipo_tendencia": "tamano" if not true_trend else "potencia",
                 "estacionalidad_verdadera": true_seas,
                 "estacionalidad_no_evaluable": n_no_eval / reps,
                 "acierto_estacionalidad": rate_seas,
                 "error_estacionalidad": (1 - rate_seas) if n_seas_eval else float("nan"),
                 "tipo_error_estacionalidad": "falso positivo" if not true_seas else "falso negativo",
+                "tipo_estacionalidad": "tamano" if not true_seas else "potencia",
                 "F_S_mediana": float(np.nanmedian(fs_vals)) if n_seas_eval else float("nan"),
                 "segundos": round(time.perf_counter() - t0, 2),
             })
@@ -163,6 +170,29 @@ def report(df: pd.DataFrame) -> None:
         "PASA" if ok else "NO PASA"))
     print("    criterio: falsos positivos de tendencia <= 20% (limitado por la")
     print("              distorsion de tamano del ADF con n=24) y de estacionalidad <= 10%.")
+    print("-" * 84)
+
+    # F37: potencia del test de tendencia por escenario y tamano muestral -
+    # el eje que quedaba sin reportar (solo se documentaba el tamano/FP).
+    print("\n" + "=" * 84)
+    print("POTENCIA DEL TEST DE TENDENCIA (tipo_tendencia == 'potencia', H1 cierta)")
+    print("=" * 84)
+    pot = df[df["tipo_tendencia"] == "potencia"]
+    if len(pot):
+        piv_pot = pot.pivot_table(index="serie", columns="n", values="acierto_tendencia")
+        for serie, row in piv_pot.iterrows():
+            cells = "".join(
+                "       n/e" if not np.isfinite(v) else "{:>10.1%}".format(v)
+                for v in row.values
+            )
+            print("  {:22s}{}".format(serie, cells))
+        print("  {:22s}{}".format("n =", "".join("{:>10d}".format(c) for c in piv_pot.columns)))
+        print("\n  NOTA: es justamente en el regimen objetivo de este trabajo (series cortas,")
+        print("        n<=36) donde la potencia del test de tendencia es mas debil -ver la")
+        print("        columna n=24/n=36 arriba frente a n=120.")
+    else:
+        print("  (sin escenarios de potencia en esta corrida; incluya --sizes con series de")
+        print("   tendencia verdadera para reportarla)")
     print("-" * 84)
 
 
