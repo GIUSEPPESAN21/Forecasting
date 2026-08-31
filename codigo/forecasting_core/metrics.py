@@ -114,10 +114,28 @@ def seasonal_naive_scale(y_train: Sequence[float], m: int = 1) -> float:
 
 
 def mase(y_true, y_pred, y_train, m: int = 1) -> float:
-    """Mean Absolute Scaled Error. Metrica PRIMARIA de ranking.
+    """Mean Absolute Scaled Error (Hyndman & Koehler, 2006). Metrica PRIMARIA de ranking.
 
-    MASE < 1  => mejor que el naive estacional in-sample.
-    MASE >= 1 => no aporta sobre repetir el ultimo valor (o el de hace m periodos).
+    Definicion exacta usada en todo el pipeline (F35, citada literalmente en
+    la Ecuacion 1 del manuscrito -ver F47-):
+
+        MASE = MAD(y_true, y_pred) / scale
+
+        scale = MAE in-sample del naive estacional, calculado SOLO sobre el
+                bloque de ENTRENAMIENTO (`y_train`, llamado `scale_train` en
+                `optimize.py`/`validation.py`: `y[:origins[0]]`, es decir las
+                observaciones ANTERIORES al primer origen de evaluacion) -
+                nunca sobre la serie completa ni sobre el bloque de
+                evaluacion. `scale = mean(|y_train[m:] - y_train[:-m]|)`.
+
+        m = 12 si `classify_series` confirmo estacionalidad, m = 1 en caso
+            contrario (ver `seasonal_naive_scale`). No es un parametro libre:
+            lo fija la clasificacion estructural de la propia serie.
+
+    MASE < 1  => el modelo evaluado mejora al naive estacional in-sample
+                 medido en el bloque de entrenamiento.
+    MASE >= 1 => no aporta sobre repetir el ultimo valor (o el de hace m
+                 periodos).
     """
     scale = seasonal_naive_scale(y_train, m=m)
     if not np.isfinite(scale):
