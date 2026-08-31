@@ -1,0 +1,2 @@
+﻿n_series,mase_mediano_incumbente,mase_mediano_herramienta,mejora_mediana_por_serie_pct,mejora_de_medianas_pct,victorias_vs_naive,empates_vs_naive,derrotas_vs_naive,wilcoxon_W_vs_incumbente,wilcoxon_p_vs_incumbente,wilcoxon_n_vs_incumbente
+40,0.9216047286663822,0.8065804120439706,19.906619333934557,12.480873095004492,24,10,6,94.0,4.9328082241117954e-06,40
