@@ -23,6 +23,31 @@ El costo esta acotado: `n_origins` ajustes (10 por defecto), no O(n).
 Cuando hay pocos origenes, la incertidumbre de los propios cuantiles empiricos
 es alta; en ese caso se recurre a una aproximacion normal escalada con sqrt(h)
 sobre la desviacion de los errores de un paso, y se declara asi en `method`.
+
+Monotonicidad del ancho de banda (F31)
+---------------------------------------
+Con menos de `MIN_ORIGINS_FOR_EMPIRICAL` origenes por horizonte, sigma[h] se
+estima con muestras muy pequenas (a veces 1-3 errores) y puede, por puro ruido
+de muestreo, salir mas chico en un horizonte largo que en uno corto -- una
+banda de prediccion que se angosta con el horizonte no tiene sentido fisico
+(la incertidumbre no puede *disminuir* al mirar mas lejos). Se fuerza no
+decrecimiento con la regla:
+
+    sigma_h_corregida = max(sigma_empirico_h, sigma_1 * sqrt(h), sigma_{h-1}_corregida)
+
+donde `h` es el horizonte (1-indexado) y `sigma_1` es la desviacion de los
+errores de un paso (o de la primera diferencia de la serie si no hay errores
+de backtest utilizables). El primer termino evita descartar informacion
+empirica real; el segundo impone el piso de un paseo aleatorio; el tercero
+propaga el maximo visto hasta ese punto, garantizando sigma[h] >= sigma[h-1]
+para todo h. El ancho de banda reportado (`upper - lower`) seria la fuente
+del mismo problema si viniera de cuantiles empiricos asimetricos calculados
+horizonte por horizonte, asi que hereda la misma regla de no decrecimiento
+aplicada al ancho TOTAL (no solo al lado mas grande, porque la suma de ambos
+lados puede seguir angostandose aunque un lado individual no lo haga): si el
+ancho crudo en el horizonte h es menor que `max(2*z*sigma_h_corregida,
+ancho_{h-1}_corregido)`, se reemplaza por una banda simetrica
+`mean +/- ancho_h_corregido/2`.
 """
 from __future__ import annotations
 
@@ -107,23 +132,25 @@ def prediction_interval(
     counts = np.isfinite(errs).sum(axis=0)
     usable = int(counts.min()) if counts.size else 0
 
-    sigma = np.full(horizon, np.nan)
+    sigma_empirico = np.full(horizon, np.nan)
     bias = np.zeros(horizon)
     for h in range(horizon):
         col = errs[:, h]
         col = col[np.isfinite(col)]
         if col.size >= 2:
-            sigma[h] = float(np.std(col, ddof=1))
+            sigma_empirico[h] = float(np.std(col, ddof=1))
             bias[h] = float(np.mean(col))
 
-    # Los horizontes sin datos suficientes se completan escalando con sqrt(h),
-    # que es el crecimiento de la varianza de un paseo aleatorio.
-    if np.isnan(sigma).any():
-        base = sigma[np.isfinite(sigma)]
-        s1 = float(base[0]) if base.size else float(np.std(np.diff(y), ddof=1))
-        for h in range(horizon):
-            if not np.isfinite(sigma[h]):
-                sigma[h] = s1 * np.sqrt(h + 1)
+    base = sigma_empirico[np.isfinite(sigma_empirico)]
+    s1 = float(base[0]) if base.size else float(np.std(np.diff(y), ddof=1))
+
+    # F31: fuerza sigma no decreciente en h (ver regla en el docstring del modulo).
+    sigma = np.empty(horizon)
+    for h in range(horizon):
+        candidate = sigma_empirico[h] if np.isfinite(sigma_empirico[h]) else s1 * np.sqrt(h + 1)
+        floor_rw = s1 * np.sqrt(h + 1)
+        prev = sigma[h - 1] if h > 0 else -np.inf
+        sigma[h] = max(candidate, floor_rw, prev)
 
     z = float(stats.norm.ppf(0.5 + level / 2.0))
     if usable >= MIN_ORIGINS_FOR_EMPIRICAL:
@@ -150,6 +177,23 @@ def prediction_interval(
             )
         )
         logger.info("Intervalos por aproximacion normal: %s", method)
+
+    # F31: el ancho de banda crudo (cuantiles empiricos por horizonte, en
+    # general asimetricos) puede angostarse por ruido de muestreo igual que
+    # sigma; se le impone la misma regla de no decrecimiento sobre el ANCHO
+    # TOTAL (upper - lower), no solo sobre el lado mas grande -maximizar solo
+    # un lado no basta cuando los cuantiles son asimetricos, porque la suma de
+    # ambos lados puede seguir siendo menor que la del horizonte anterior.
+    ancho_crudo = upper - lower
+    ancho_corregido = np.empty(horizon)
+    for h in range(horizon):
+        floor_h = 2.0 * z * sigma[h]
+        prev = ancho_corregido[h - 1] if h > 0 else -np.inf
+        ancho_corregido[h] = max(ancho_crudo[h], floor_h, prev)
+        if ancho_corregido[h] > ancho_crudo[h]:
+            half = ancho_corregido[h] / 2.0
+            lower[h] = mean[h] - half
+            upper[h] = mean[h] + half
 
     if clip_non_negative:
         lower = np.maximum(lower, 0.0)
