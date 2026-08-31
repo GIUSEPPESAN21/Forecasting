@@ -221,6 +221,11 @@ def main() -> int:
     print("\n" + "=" * 88)
     print("DISTRIBUCION DE MASE POR REGIMEN ESTRUCTURAL ({} series)".format(len(ok)))
     print("=" * 88)
+    if ok.empty:
+        print("  Ninguna serie produjo un ganador con este --max-len (ver motivos arriba); "
+              "nada que agregar por regimen.")
+        print("=" * 88)
+        return 1
     regimen_rows = []
     for regimen, grupo in ok.groupby("regimen"):
         print("\n  {} (n={})".format(regimen, len(grupo)))
