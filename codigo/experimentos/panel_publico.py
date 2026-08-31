@@ -73,7 +73,8 @@ def load_m3_monthly_short(max_len: int, min_len: int = 24) -> pd.DataFrame:
     return df.groupby("unique_id", group_keys=False).tail(max_len).copy()
 
 
-def evaluate_one(uid: str, y: np.ndarray, m: int = 12, outer_block: int = 6) -> dict | None:
+def evaluate_one(uid: str, y: np.ndarray, m: int = 12, outer_block: int = 6,
+                  structural_filter: bool = True) -> dict | None:
     """Evalua UNA serie con el protocolo externo honesto (F05 aplicado tambien
     a la eleccion del metodo, no solo a sus hiperparametros).
 
@@ -97,7 +98,8 @@ def evaluate_one(uid: str, y: np.ndarray, m: int = 12, outer_block: int = 6) -> 
                 "detalle": "{}: {}".format(type(exc).__name__, exc)}
 
     try:
-        out = honest_outer_estimate(s, m=m, outer_block=outer_block)
+        out = honest_outer_estimate(s, m=m, outer_block=outer_block,
+                                     structural_filter=structural_filter)
     except Exception as exc:
         return {"unique_id": uid, "n_obs": len(y), "estado": "error",
                 "detalle": "{}: {}".format(type(exc).__name__, exc)}
@@ -111,12 +113,23 @@ def evaluate_one(uid: str, y: np.ndarray, m: int = 12, outer_block: int = 6) -> 
     outer = out["outer_metrics"].set_index("modelo")
     fila = {"unique_id": uid, "n_obs": len(y), "estado": "ok", "regimen": regimen,
             "ganador": out["winner"]}
-    for metodo in ("naive", "seasonal_naive", out["winner"]):
+    # F32: mase_naive/mase_seasonal_naive y mase_ganador son columnas
+    # independientes. Antes se escribian con el mismo "for metodo in (...,
+    # out['winner'])", que cuando el ganador ERA 'naive' colapsaba las dos
+    # escrituras de 'naive' en una sola (la del ganador) y dejaba mase_naive
+    # sin poblar -NaN- para esas filas, descartandolas silenciosamente del
+    # test de Wilcoxon (17 series de 150 en la corrida original). Se escriben
+    # aqui por separado, sin importar quien haya ganado.
+    for metodo in ("naive", "seasonal_naive"):
         if metodo in outer.index:
             r = outer.loc[metodo]
-            if not bool(r["elegible"]):
-                continue
-            fila["mase_{}".format(metodo if metodo != out["winner"] else "ganador")] = float(r["mase"])
+            if bool(r["elegible"]):
+                fila["mase_{}".format(metodo)] = float(r["mase"])
+    winner = out["winner"]
+    if winner in outer.index:
+        r = outer.loc[winner]
+        if bool(r["elegible"]):
+            fila["mase_ganador"] = float(r["mase"])
     return fila
 
 
@@ -147,7 +160,16 @@ def main() -> int:
     ap.add_argument("--max-len", type=int, default=48)
     ap.add_argument("--min-len", type=int, default=24)
     ap.add_argument("--seed", type=int, default=20260824)
+    ap.add_argument("--structural-filter", dest="structural_filter", action="store_true",
+                     default=True, help="Filtro estructural activado (por defecto)")
+    ap.add_argument("--no-structural-filter", dest="structural_filter", action="store_false",
+                     help="Desactiva el filtro estructural (F33: ablacion)")
     args = ap.parse_args()
+
+    # F36: cada longitud escribe su propio CSV (panel_publico_len{max_len}.csv);
+    # ademas se mantiene panel_publico.csv como alias del caso base (max_len=48)
+    # por compatibilidad con el resto del pipeline/manuscrito que ya lo cita.
+    suffix = "_len{}".format(args.max_len)
 
     if args.n_series > 300:
         print("ATENCION: n-series={} excede el limite de 300 del prompt maestro "
@@ -171,7 +193,7 @@ def main() -> int:
     rows = []
     for i, uid in enumerate(ids, 1):
         y = df.loc[df["unique_id"] == uid, "y"].to_numpy(dtype=float)
-        row = evaluate_one(uid, y)
+        row = evaluate_one(uid, y, structural_filter=args.structural_filter)
         rows.append(row)
         if i % 25 == 0 or i == len(ids):
             ok = sum(1 for r in rows if r.get("estado") == "ok")
@@ -187,35 +209,84 @@ def main() -> int:
             print("    {}: {}".format(motivo, cnt))
 
     ok = res_df[res_df["estado"] == "ok"].copy()
+    ok["max_len"] = args.max_len
+    ok["structural_filter"] = args.structural_filter
     OUT_DIR.mkdir(parents=True, exist_ok=True)
-    ok.to_csv(OUT_DIR / "panel_publico.csv", index=False, encoding="utf-8-sig")
+    ok.to_csv(OUT_DIR / "panel_publico{}.csv".format(suffix), index=False, encoding="utf-8-sig")
+    if args.max_len == 48 and args.structural_filter:
+        # Alias de compatibilidad: el resto del pipeline y el manuscrito citan
+        # "panel_publico.csv" a secas para el caso base (max_len=48, filtro on).
+        ok.to_csv(OUT_DIR / "panel_publico.csv", index=False, encoding="utf-8-sig")
 
     print("\n" + "=" * 88)
     print("DISTRIBUCION DE MASE POR REGIMEN ESTRUCTURAL ({} series)".format(len(ok)))
     print("=" * 88)
+    regimen_rows = []
     for regimen, grupo in ok.groupby("regimen"):
         print("\n  {} (n={})".format(regimen, len(grupo)))
+        medianas = {}
         for col in ("mase_naive", "mase_seasonal_naive", "mase_ganador"):
             if col in grupo.columns and grupo[col].notna().any():
                 v = grupo[col].dropna()
+                medianas[col] = float(v.median())
                 print("    {:22s} mediana={:.3f}  media={:.3f}  q25={:.3f}  q75={:.3f}".format(
                     col, v.median(), v.mean(), v.quantile(0.25), v.quantile(0.75)))
+        fila_reg = {"regimen": regimen, "n": len(grupo),
+                    "mediana_mase_ganador": medianas.get("mase_ganador", float("nan")),
+                    "mediana_mase_naive": medianas.get("mase_naive", float("nan"))}
         if "mase_ganador" in grupo.columns and "mase_naive" in grupo.columns:
             comp = grupo.dropna(subset=["mase_ganador", "mase_naive"])
             if len(comp):
-                supera = (comp["mase_ganador"] < comp["mase_naive"]).mean()
-                print("    la herramienta supera al naive en {:.0%} de las series".format(supera))
+                gana = (comp["mase_ganador"] < comp["mase_naive"]).mean()
+                pierde_mediana = fila_reg["mediana_mase_ganador"] > fila_reg["mediana_mase_naive"]
+                print("    la herramienta supera al naive en {:.0%} de las series ({} con par valido)"
+                      .format(gana, len(comp)))
+                if pierde_mediana:
+                    print("    ATENCION: en este regimen la herramienta PIERDE contra naive en la "
+                          "mediana ({:.3f} vs {:.3f})".format(
+                              fila_reg["mediana_mase_ganador"], fila_reg["mediana_mase_naive"]))
+                fila_reg["tasa_victoria"] = float(gana)
+                fila_reg["n_pares_validos"] = int(len(comp))
+        regimen_rows.append(fila_reg)
+    pd.DataFrame(regimen_rows).to_csv(OUT_DIR / "panel_publico_por_regimen{}.csv".format(suffix),
+                                       index=False, encoding="utf-8-sig")
 
     print("\n" + "-" * 88)
     print("Ganador mas frecuente por regimen:")
     print(ok.groupby("regimen")["ganador"].agg(lambda s: s.value_counts().idxmax()))
 
     print("\n" + "-" * 88)
+    print("Desglose victorias/empates/derrotas: herramienta (mase_ganador) vs. naive")
+    comp_all = ok.dropna(subset=["mase_ganador", "mase_naive"])
+    n_total_ok = len(ok)
+    n_pares = len(comp_all)
+    n_sin_par = n_total_ok - n_pares
+    victorias = int((comp_all["mase_ganador"] < comp_all["mase_naive"]).sum())
+    derrotas = int((comp_all["mase_ganador"] > comp_all["mase_naive"]).sum())
+    empates = int((comp_all["mase_ganador"] == comp_all["mase_naive"]).sum())
+    print("  Series con estado='ok': {}".format(n_total_ok))
+    print("  Series con par (mase_ganador, mase_naive) no nulo: {}".format(n_pares))
+    print("  Series excluidas por par no disponible (mase_naive o mase_ganador NaN): {}"
+          .format(n_sin_par))
+    print("  Victorias (mase_ganador < mase_naive): {} ({:.0%})".format(victorias, victorias / n_pares if n_pares else 0))
+    print("  Empates exactos (mase_ganador == mase_naive): {} ({:.0%})".format(empates, empates / n_pares if n_pares else 0))
+    print("  Derrotas (mase_ganador > mase_naive): {} ({:.0%})".format(derrotas, derrotas / n_pares if n_pares else 0))
+    wtl = pd.DataFrame([{"n_series_ok": n_total_ok, "n_pares_validos": n_pares,
+                          "n_excluidas_sin_par": n_sin_par, "victorias": victorias,
+                          "empates": empates, "derrotas": derrotas}])
+    wtl.to_csv(OUT_DIR / "panel_publico_wtl{}.csv".format(suffix), index=False, encoding="utf-8-sig")
+
+    print("\n" + "-" * 88)
     print("Prueba de Diebold-Mariano agregada (herramienta vs. naive; H0: igual exactitud)")
     print("Nota: requiere errores por origen, no solo el MASE resumen; con las columnas")
     print("agregadas de este panel se reporta un contraste aproximado sobre el MASE por")
     print("serie (equivalente a un signo de Wilcoxon), declarado explicitamente como tal:")
-    comp = ok.dropna(subset=["mase_ganador", "mase_naive"])
+    # F32: Wilcoxon debe excluir empates exactos explicitamente (tratamiento
+    # estandar: scipy los excluye internamente por defecto, pero aqui se
+    # reporta cuantos fueron para que el n resultante quede documentado).
+    comp = comp_all[comp_all["mase_ganador"] != comp_all["mase_naive"]]
+    print("  Pares con diferencia no nula usados en Wilcoxon: {} (de {} pares totales, "
+          "{} empates exactos excluidos)".format(len(comp), n_pares, empates))
     if len(comp) >= 10:
         from scipy import stats
         stat, p = stats.wilcoxon(comp["mase_ganador"], comp["mase_naive"])
@@ -227,7 +298,9 @@ def main() -> int:
             "significativa en esta muestra."
         ))
     print("=" * 88)
-    print("\nCSV:", OUT_DIR / "panel_publico.csv")
+    print("\nCSV:", OUT_DIR / "panel_publico{}.csv".format(suffix))
+    print("CSV por regimen:", OUT_DIR / "panel_publico_por_regimen{}.csv".format(suffix))
+    print("CSV W/T/L:", OUT_DIR / "panel_publico_wtl{}.csv".format(suffix))
     return 0
 
 
