@@ -69,7 +69,18 @@ class InventoryPolicy:
 
 
 def safety_stock(sigma_lead_time: float, service_level: float = 0.95) -> tuple[float, float]:
-    """SS = z * sigma_L. Devuelve (SS, z)."""
+    """SS = z * sigma_L. Devuelve (SS, z).
+
+    F38: de las dos piezas de la formula, solo `sigma_L` es empirica; `z` es
+    el cuantil de la normal ESTANDAR que corresponde al nivel de servicio
+    pedido, `z = Phi^-1(nivel_de_servicio)` (p.ej. z=1.645 para 95%), tal
+    cual la formulacion clasica de Silver, Pyke & Peterson (1998). Lo que
+    distingue a este modulo de la aproximacion de libro de texto NO es
+    reemplazar ese cuantil por uno empirico -sigue siendo normal-, sino
+    estimar `sigma_L` (el error acumulado sobre el lead time) directamente
+    de los residuos del walk-forward en `compute_policy`, en vez de asumir
+    `sigma_L = sigma_1 * sqrt(L)` (independencia entre errores sucesivos).
+    """
     if not 0.5 < service_level < 1.0:
         raise ValueError("El nivel de servicio debe estar entre 0.5 y 1.0")
     z = float(stats.norm.ppf(service_level))
