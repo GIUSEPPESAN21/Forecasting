@@ -123,7 +123,7 @@ escribe CSV + log versionados en `resultados/`):
   `forecasting_core.metrics`.
 - Salida: `resultados/comparativa_externa.csv` +
   `resultados/logs/comparativa_externa.log`.
-- Si el archivo real de Tuboplex sigue sin estar disponible, usar el mismo
+- Si el archivo real de la empresa de referencia sigue sin estar disponible, usar el mismo
   panel sintético de `vs_incumbente.py` (acepta `--input` igual que ese
   script, por consistencia).
 
