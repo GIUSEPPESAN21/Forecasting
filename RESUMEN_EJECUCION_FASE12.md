@@ -37,7 +37,7 @@ y F34 (3).
 | ID | Título | Estado | Evidencia |
 |---|---|---|---|
 | F40 | Reencuadre narrativo de "auditoría" a "contribución" | **Corregido y verificado** | Introducción reestructurada en 3 contribuciones explícitas; nueva Sección 3.7 "Measured Effect of Common Validation Pitfalls" (`\label{sec:pitfalls}`) consolida las comparaciones antes/después; 0 ocurrencias residuales problemáticas de las frases de auditoría listadas en el prompt (verificado por script, ver abajo) |
-| F41 | Título, abstract, anonimización, evidencia industrial | **Corregido y verificado** (opción por defecto aplicada: no se encontró archivo real de datos de la empresa) | Título reutilizado tal cual de la decisión previa; `grep -ic "tuboplex"` = 0; "the reference company" desde su primera introducción; abstract reescrito a 200 palabras exactas (`wc -w` verificado); declaración de revisión institucional alineada con la realidad (panel sintético); nota interna sin terminar en Sec. 3.4 eliminada |
+| F41 | Título, abstract, anonimización, evidencia industrial | **Corregido y verificado** (opción por defecto aplicada: no se encontró archivo real de datos de la empresa) | Título reutilizado tal cual de la decisión previa; `grep -ic` del nombre real de la empresa = 0; "the reference company" desde su primera introducción; abstract reescrito a 200 palabras exactas (`wc -w` verificado); declaración de revisión institucional alineada con la realidad (panel sintético); nota interna sin terminar en Sec. 3.4 eliminada |
 
 ## Parte C — Contenido técnico
 
@@ -110,7 +110,7 @@ y F34 (3).
    Los autores deben compilar localmente (`pdflatex` dos veces dentro de
    `manuscritos/articulo_mdpi/`) antes del envío para la verificación final
    que este entorno no puede hacer.
-3. **`grep -ic "tuboplex"` sobre el `.tex`**: **0**. ✅
+3. **`grep -ic` del nombre real de la empresa sobre el `.tex`**: **0**. ✅
 4. **Frases residuales de encuadre de auditoría** (lista de F40): 2
    ocurrencias residuales revisadas manualmente y consideradas benignas —
    "earlier version" describe una comparación de cómputo real contra un
