@@ -1,4 +1,4 @@
-# Manual de usuario — Motor de Pronósticos Tuboplex
+# Manual de usuario — Motor de Pronósticos
 
 [⬅ Volver al README](../README.md) · [Índice del manual](#índice)
 
