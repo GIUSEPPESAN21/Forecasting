@@ -503,3 +503,99 @@ este entorno, no por los cambios de esta fase).
 git history nota: el nombre real de la empresa sigue presente en commits
 anteriores a esta fase. Reescribir el historial de git está fuera de
 alcance de esta fase (ver discusión en `RESUMEN_EJECUCION_FASE13.md`).
+
+## Fase 14 — Reconstrucción de autoría/manuscrito y corrección de F35 (2026-09-01)
+
+Reconstrucción del manuscrito para reflejar la autoría real del proyecto (5
+personas) y dos secciones de validación adicionales, más dos correcciones
+puntuales que habían quedado pendientes de fases anteriores.
+
+### Parte A — Autoría, Highlights y CRediT
+- `\Author`/`\AuthorNames` ampliados de 2 a 5 autores: Catalina Valles
+  González, Joseph Javier Sánchez Acuña, María Paula Corral Ramírez, Luis
+  Tarazona-Torres (autor de correspondencia) y David Álvarez-Martínez.
+- Bloque `\addhighlights` habilitado (antes comentado en su totalidad): dos
+  hallazgos principales y dos implicaciones, siguiendo el límite de 2 viñetas
+  por bloque del formato MDPI.
+- `\authorcontributions` (CRediT) reescrito con las iniciales de los 5
+  autores por categoría, en vez de las dos previas.
+
+### Parte B — Dos secciones y cuatro figuras nuevas
+- Nueva Sección 3.2 "Validation of the Structural Classification Tests"
+  (`sec:mcvalidation`) con la Figura 2 (`fig2_montecarlo_clasificacion.png`,
+  generada por `codigo/experimentos/make_figura_montecarlo.py`, nuevo):
+  desglosa por escenario y longitud (24/36/48/120) las tasas de falso
+  positivo de los tests de tendencia y estacionalidad ya validados en la
+  Sección 2.4, en vez de solo las dos cifras agregadas (8.9%/1.4%).
+- Nueva Sección 3.9 "Sensitivity Analysis of the External Comparison"
+  (`sec:sensitivity`) con Figura 7 (`fig_c4_bootstrap_winrate.png`, generada
+  por `codigo/experimentos/analisis_sensibilidad_ci.py`, nuevo): correlación
+  de Spearman entre longitud de serie y MASE/diferencias pareadas (ninguna
+  significativa, $p\geq0.076$) e intervalos de confianza bootstrap (10 000
+  remuestreos) sobre la mediana de MASE y la tasa de victoria de la
+  herramienta contra Prophet y contra LightGBM. Hallazgo clave: el intervalo
+  de la tasa de victoria contra Prophet toca el nivel de azar (95% CI
+  [50%, 78%]) pese a ser significativo por Wilcoxon ($p=0.043$), mientras
+  que el intervalo contra LightGBM queda claramente por encima (95% CI
+  [58%, 84%]) — la ventaja sobre LightGBM es robusta a remuestreo, la
+  ventaja sobre Prophet no lo es tanto. Ambos scripts reutilizan
+  `resultados/comparativa_externa.csv` sin recorrer el pipeline externo.
+- Sección 3.6 (External Baselines) ampliada con dos figuras adicionales:
+  Figura 4 (`fig_c1_boxplot_mase.png`, distribución completa de MASE por
+  método) y Figura 6 (`fig_c3_panel_regimenes.png`, pronóstico ilustrativo
+  herramienta/Prophet/LightGBM en cuatro regímenes estructurales), y un
+  desglose Wilcoxon completo (herramienta vs. Prophet W=428.0 p=0.043;
+  herramienta vs. LightGBM W=332.0 p=0.003; ambos comparadores externos
+  también significativamente mejores que naive) que antes solo reportaba
+  porcentajes de victoria sin prueba de significancia.
+- Nueva Tabla 4 (`tab:testsuite`) en la Sección 2.7 (Computational
+  Implementation): desglose de los 276 tests en 13 archivos con el modo de
+  falla que cada uno previene, en vez de la enumeración prosa previa. Texto
+  de disponibilidad de datos (Sección 2.8) reescrito para enumerar los ocho
+  scripts de reproducibilidad por nombre, incluyendo el nuevo
+  `analisis_sensibilidad_ci.py`.
+- Cita `ke2017lightgbm` (Ke et al., NeurIPS 2017) agregada donde el
+  manuscrito ya nombraba "LightGBM 4.7.0" sin referencia bibliográfica;
+  entrada de bibliografía correspondiente añadida (35→36 entradas,
+  comentario del archivo actualizado).
+- Declaración de uso de GenAI (Sección 2.9) y sección de Discusión
+  actualizadas para reconocer explícitamente el nuevo análisis de
+  sensibilidad y su hallazgo (ventaja sobre Prophet significativa pero no
+  robusta a remuestreo).
+
+### Parte C — F35: Ecuación 1 (MASE) vs. código
+Hallazgo verificado por revisión externa: la Ecuación 1 del manuscrito
+escalaba el error absoluto medio sobre la serie completa
+($\frac{1}{n-m}\sum_{t=m+1}^{n}$), pero `codigo/forecasting_core/metrics.py`
+(`mase()`) siempre escaló solo sobre el bloque de entrenamiento
+(`scale_train`, anterior al primer origen de evaluación) — la Fase 12 (F47)
+había afirmado alinear ambos pero la ecuación en sí no se tocó. Decisión:
+corregir el texto para que describa exactamente lo que el código ya hace en
+todo el pipeline, sin tocar `metrics.py` ni ninguna línea ejecutable — cambiar
+el escalado ahora invalidaría todas las cifras de MASE ya publicadas y
+verificadas en el resto del manuscrito.
+- Ecuación 1 reescrita: numerador sobre el bloque de evaluación de $h$
+  puntos ($D_t$, $F_t$), denominador sobre el bloque de entrenamiento
+  $Y_1,\dots,Y_{n_{\text{train}}}$ que precede al primer origen de
+  evaluación, con $m=12$ solo si la clasificación estructural de la Sección
+  2.4 confirmó estacionalidad y $m=1$ en caso contrario. Frase introductoria
+  agregada: "following exactly the definition implemented in
+  `forecasting_core.metrics.mase`".
+- Docstring de `mase()` en `codigo/forecasting_core/metrics.py` actualizado
+  para referenciar esta corrección de la Fase 14 en vez de la referencia
+  circular previa a F47. Cambio de comentario únicamente; ningún test se ve
+  afectado.
+
+### Parte D — Typo bibliográfico
+- **Kerkkänen** — `\bibitem{kerkkanen2009}` tenía "Kerk\"{a}nen" (faltaba una
+  "k"); corregido a "Kerkk\"{a}nen", consistente con la cita en prosa de la
+  Introducción ("Kerkk\"{a}nen et al. \cite{kerkkanen2009}"), que ya estaba
+  bien escrita.
+
+### Parte E — Verificación
+- `pytest codigo/tests -q` re-corrido tras los cambios de Parte C (solo
+  docstring, sin lógica ejecutable modificada): sin cambios esperados
+  respecto a la Fase 13.
+- `pdflatex` (3 pasadas) sin referencias ni citas indefinidas.
+- `grep -rli` del nombre real de la empresa sobre todo el repositorio:
+  vacío (sin regresión de la anonimización de la Fase 13).
