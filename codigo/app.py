@@ -1,5 +1,5 @@
 # ======================================================
-# app.py - Motor de Pronosticos Tuboplex (interfaz Dash)
+# app.py - Motor de Pronosticos (interfaz Dash)
 # ======================================================
 #
 # Capa DELGADA. Toda la logica de dominio vive en forecasting_core, que no
@@ -39,7 +39,7 @@ logging.basicConfig(
 logger = logging.getLogger("forecasting_app")
 
 app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
-app.title = "Motor de Pronosticos - Tuboplex"
+app.title = "Motor de Pronosticos"
 server = app.server
 
 
