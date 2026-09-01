@@ -450,7 +450,7 @@ verificación.
 
 Una auditoría independiente posterior a la Fase 12 confirmó que
 `manuscritos/articulo_mdpi/template.tex` ya estaba anonimizado, pero que el
-nombre real de la empresa ("Tuboplex") seguía presente en 13 archivos del
+nombre real de la empresa seguía presente en 13 archivos del
 repositorio público al que remite el Data Availability Statement del
 manuscrito. Esta fase cierra esa fuga. Cambio puramente textual: ninguna
 línea de lógica de negocio, algoritmos o datos numéricos fue modificada.
@@ -460,9 +460,9 @@ línea de lógica de negocio, algoritmos o datos numéricos fue modificada.
   "la empresa de referencia"; ancla del enlace "Volver al inicio" ajustada
   al nuevo título.
 - **codigo/app.py** (tipo b): comentario de cabecera y `app.title`
-  ("Motor de Pronosticos - Tuboplex" → "Motor de Pronosticos"): referencia a
-  la empresa eliminada, no reemplazada por una frase larga (título de
-  pestaña del navegador).
+  (antes "Motor de Pronosticos - " + nombre real de la empresa → "Motor de
+  Pronosticos"): referencia a la empresa eliminada, no reemplazada por una
+  frase larga (título de pestaña del navegador).
 - **docs/MANUAL_USUARIO.md** (tipo b): título del documento anonimizado.
 - **codigo/experimentos/caso_ilustrativo.py** (tipo a): dos referencias en
   docstring reemplazadas.
@@ -493,8 +493,9 @@ línea de lógica de negocio, algoritmos o datos numéricos fue modificada.
   manera que en CHANGELOG.md.
 
 Verificación (ver `RESUMEN_EJECUCION_FASE13.md` para la salida completa de
-cada comando): `grep -rli "tuboplex" .` → vacío; `grep -ic "tuboplex"
-template.tex` → 0 (sin cambios); `pytest codigo/tests -q` → 276 tests, 0
+cada comando): `grep -rli` del nombre real de la empresa sobre todo el
+repositorio → vacío; el mismo `grep -ic` sobre `template.tex` → 0 (sin
+cambios); `pytest codigo/tests -q` → 276 tests, 0
 fallos, 0 errores (el conteo de skipped difiere del de la auditoría por
 disponibilidad de paquetes opcionales — prophet/mlforecast/lightgbm — en
 este entorno, no por los cambios de esta fase).
