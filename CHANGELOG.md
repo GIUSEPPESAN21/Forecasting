@@ -389,8 +389,14 @@ verificación.
 - **F47** — Ecuación 1 (MASE) y texto circundante alineados con el
   docstring de F35 (denominador sobre `scale_train`, m=12/1 según
   estacionalidad confirmada); frase ambigua eliminada.
-- **F48** — Sensibilidad de `outer_block`: ver F39 /
-  `RESUMEN_EJECUCION_FASE12.md`.
+- **F48** — Sensibilidad de `outer_block` (ver F39): 150 series,
+  `outer_block` en {6,9,12}. MASE mediano 0.701/0.707/0.739; victoria vs.
+  naive 63.3%/71.3%/59.3% — patrón NO monótono, confirma la advertencia de
+  varianza muestral de la Sección 2.5 sobre un MASE estimado con pocos
+  orígenes. Seis orígenes se mantiene como valor por defecto en todo el
+  paper por ser el menor común soportado por las tres longitudes del panel,
+  no por producir el resultado más favorable (de los tres valores, ni el
+  más alto ni el más bajo).
 - **F49** — Panel M3 corrido a tres longitudes reales (ver F36); limitación
   de dominio explícita en Discusión (M3-Monthly no es demanda industrial;
   24-35 obs sin validar con series reales).

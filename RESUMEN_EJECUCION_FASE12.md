@@ -49,7 +49,7 @@ y F34 (3).
 | F45 | Resultado de la ablación del filtro estructural (depende de F33) | **Corregido y verificado** | 150 series idénticas: MASE mediano 0.701 (filtro on) vs. 0.715 (filtro off); tasa de victoria vs. naive 63.3% vs. 62.7%. El filtro aporta una mejora pequeña pero consistente (~2% relativo); la mayor parte de la ventaja viene del resto del protocolo. `resultados/ablacion_filtro_estructural_resumen.csv` |
 | F46 | Cifra "19.9%" y Wilcoxon herramienta-vs-incumbente (depende de F34) | **Corregido y verificado** | "19.9%" = mediana de mejoras por serie; "12.5%" = mejora de medianas (dato complementario); Wilcoxon W=94.0 p=4.9e-6; WTL vs. naive 24/10/6 (no solo "60%") |
 | F47 | Definición de MASE sin ambigüedad (depende de F35) | **Corregido y verificado** | Ecuación 1 y texto circundante alineados con el docstring de `mase()`: denominador sobre el bloque de entrenamiento, m=12/1 según estacionalidad confirmada |
-| F48 | Bloque externo de 6 orígenes (depende de F39) | **Pendiente de dato externo** — script aún no ejecutado (se ejecutará tras F45 por presupuesto de memoria de la máquina, 8GB); actualizar esta fila y §3.7/§3.5 del manuscrito con el resultado real | `resultados/sensibilidad_outer_block.csv` |
+| F48 | Bloque externo de 6 orígenes (depende de F39) | **Corregido y verificado** | 150 series: `outer_block=6` → MASE mediano 0.701, victoria 63.3%; `outer_block=9` → 0.707, 71.3%; `outer_block=12` → 0.739, 59.3% — patrón no monótono, confirma la advertencia de varianza muestral de la Sección 2.5. `resultados/sensibilidad_outer_block.csv` |
 | F49 | Panel M3: tres longitudes + limitación de dominio (depende de F36) | **Corregido y verificado** | n=24: 0/150 (protocolo insatisfacible); n=36: 150/150, 0.820 vs. 0.851, 50%; n=48: 150/150, 0.701 vs. 0.829, 63%; limitación de dominio explícita en Discusión (M3-Monthly no es demanda industrial; 24-35 obs sin validar con series reales) |
 | F50 | Potencia del test de tendencia (depende de F37) | **Corregido y verificado** | n=24: 42.7% (lineal), 44.2% (deriva), 0% (tendencia+estacional); n=36: 91.4%/55.3%/80.8%; abstract/conclusiones: "single digits" → "8.9% mean (max 15.8%)" |
 | F51 | Stock de seguridad: no sobrevender "empírico" (depende de F38) | **Corregido y verificado** | SS=z·sigma_L, z=Φ⁻¹(0.95)=1.645 (normal, no empírico), sigma_L empírico (walk-forward); diferencia entre los 8 orígenes de la Tabla 2 y los 10 internos de `compute_policy` explicada |
@@ -82,7 +82,7 @@ y F34 (3).
 | `comparativa_externa.csv` (preexistente, 50 series, 24–180 obs) | MASE mediano: herramienta=0.747, Prophet=0.785, LightGBM=0.893, naive=1.070; herramienta gana a Prophet 64%, a LightGBM 72%; LightGBM gana en n=24 (0.798) y n=120 (0.388) |
 | `montecarlo_clasificacion.csv` (preexistente, sin cambio de lógica) | FP tendencia: media 8.9% (máx 15.8%); FP estacionalidad: media 1.4% (máx 3.5%); potencia de tendencia n=24: 42.7%/44.2%/0% (lineal/deriva/tendencia+estacional) |
 | `ablacion_filtro_estructural.py` (150 series, ambos modos) | MASE mediano: 0.701 (filtro on) vs. 0.715 (filtro off); victoria vs. naive: 63.3% vs. 62.7% |
-| `sensibilidad_outer_block.py` | **pendiente** — actualizar al terminar |
+| `sensibilidad_outer_block.py` (150 series, outer_block∈{6,9,12}) | MASE mediano: 0.701/0.707/0.739; victoria vs. naive: 63.3%/71.3%/59.3% — no monótono |
 | `benchmark_tiempos.py` | sin cambios respecto a la Fase 7 (no reejecutado; SD alta en n=96 documentada como limitación de la medición) |
 
 ## Verificación final (Parte E del prompt)
@@ -128,15 +128,12 @@ y F34 (3).
 ## Pendiente al momento de escribir este resumen
 
 - **F45**: completado — ver tabla arriba y §3.7/Discusión del manuscrito.
-- **F48**: `sensibilidad_outer_block.py` corriendo al momento de escribir
-  esta actualización (150 series × 3 valores de `outer_block`, más costoso
-  que la ablación). El script ya está probado (reutiliza `evaluate_one` de
-  `panel_publico.py`, cubierto indirectamente por sus pruebas). **No se ha
-  escrito ningún número para F48 en el manuscrito todavía** — la Sección
-  3.7 lo describe metodológicamente sin adelantar una cifra, exactamente
-  para no violar la regla de "nunca un número que no se pueda señalar en
-  un CSV real". Se actualizará esta fila y el §3.5/§3.7 del manuscrito en
-  cuanto termine.
+- **F48**: completado — ver tabla arriba y §3.7 del manuscrito.
+- Todos los hallazgos F31–F54 quedan `Corregido y verificado` salvo la
+  decisión de diseño explícita en F52 (SD de `benchmark_tiempos.py` en
+  n=96, no reejecutado con `--reps 10` por presupuesto de tiempo) y la
+  imposibilidad de compilar `pdflatex` en esta máquina (ver punto 2 de la
+  verificación final).
 - **F52 (benchmark de tiempos)**: no se reejecutó `benchmark_tiempos.py
   --reps 10` por presupuesto de tiempo de esta sesión (máquina de 8GB con
   varias corridas largas ya encoladas); documentado como limitación
