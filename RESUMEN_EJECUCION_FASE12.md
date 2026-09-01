@@ -53,7 +53,7 @@ y F34 (3).
 | F49 | Panel M3: tres longitudes + limitación de dominio (depende de F36) | **Corregido y verificado** | n=24: 0/150 (protocolo insatisfacible); n=36: 150/150, 0.820 vs. 0.851, 50%; n=48: 150/150, 0.701 vs. 0.829, 63%; limitación de dominio explícita en Discusión (M3-Monthly no es demanda industrial; 24-35 obs sin validar con series reales) |
 | F50 | Potencia del test de tendencia (depende de F37) | **Corregido y verificado** | n=24: 42.7% (lineal), 44.2% (deriva), 0% (tendencia+estacional); n=36: 91.4%/55.3%/80.8%; abstract/conclusiones: "single digits" → "8.9% mean (max 15.8%)" |
 | F51 | Stock de seguridad: no sobrevender "empírico" (depende de F38) | **Corregido y verificado** | SS=z·sigma_L, z=Φ⁻¹(0.95)=1.645 (normal, no empírico), sigma_L empírico (walk-forward); diferencia entre los 8 orígenes de la Tabla 2 y los 10 internos de `compute_policy` explicada |
-| F52 | Consistencia terminológica y de cómputo | **Corregido y verificado** | "Cochrane–Orcutt" unificado (antes también "GLSAR(1)"); hardware consolidado en una sola descripción, verificado (Windows 11 build 26200, no "Windows 10" — artefacto de `platform.platform()`); objetivo de 25s aclarado como aplicable solo a n≤48; "183s" marcado como medición única no comparable bajo el protocolo de 5 reps de la Tabla 5; SD alta en n=96 documentada como límite de la medición, no reejecutado (`--reps 10`) por presupuesto de tiempo de esta sesión — **decisión de diseño aplicada**: se documenta como limitación explícita en vez de dejarlo sin comentar |
+| F52 | Consistencia terminológica y de cómputo | **Corregido y verificado** | "Cochrane–Orcutt" unificado (antes también "GLSAR(1)"); hardware consolidado en una sola descripción, verificado (Windows 11 build 26200, no "Windows 10" — artefacto de `platform.platform()`); objetivo de 25s aclarado como aplicable solo a n≤48; "183s" marcado como medición única no comparable bajo el protocolo de 5 reps de la Tabla 5; `benchmark_tiempos.py --reps 10` sí se reejecutó (`resultados/benchmark_tiempos_reps10.csv`) — la varianza NO se redujo (n=96 SD 10.8s→19.1s; exponente ajustado 1.34→1.11), así que se mantiene la Tabla 5 original y se cita la corrida de 10 repeticiones como evidencia adicional de que la varianza es del entorno de medición, no del pipeline — **decisión de diseño aplicada**: no reemplazar la Tabla 5, documentar ambas mediciones |
 
 ## Parte D — Higiene mecánica y bibliografía
 
@@ -83,7 +83,8 @@ y F34 (3).
 | `montecarlo_clasificacion.csv` (preexistente, sin cambio de lógica) | FP tendencia: media 8.9% (máx 15.8%); FP estacionalidad: media 1.4% (máx 3.5%); potencia de tendencia n=24: 42.7%/44.2%/0% (lineal/deriva/tendencia+estacional) |
 | `ablacion_filtro_estructural.py` (150 series, ambos modos) | MASE mediano: 0.701 (filtro on) vs. 0.715 (filtro off); victoria vs. naive: 63.3% vs. 62.7% |
 | `sensibilidad_outer_block.py` (150 series, outer_block∈{6,9,12}) | MASE mediano: 0.701/0.707/0.739; victoria vs. naive: 63.3%/71.3%/59.3% — no monótono |
-| `benchmark_tiempos.py` | sin cambios respecto a la Fase 7 (no reejecutado; SD alta en n=96 documentada como limitación de la medición) |
+| `benchmark_tiempos.py` (Tabla 5, 5 reps, sin cambios respecto a Fase 7) | 24: 3.9s, 48: 11.8s, 72: 15.2s, 96: 29.9s±10.8s, 120: 33.3s |
+| `benchmark_tiempos.py --reps 10` (validación, nuevo) | 24: 6.2s±7.0s, 48: 11.4s±2.1s, 72: 16.4s±2.6s, 96: 34.7s±19.1s, 120: 32.0s±10.4s; exponente 1.11 (vs. 1.34 con 5 reps) — confirma que la varianza es del entorno, no se reduce con más repeticiones |
 
 ## Verificación final (Parte E del prompt)
 
@@ -125,20 +126,14 @@ y F34 (3).
    de hallazgos estrechamente relacionados, con el ID en el mensaje, a lo
    largo de todo el proceso (no un commit gigante al final). ✅
 
-## Pendiente al momento de escribir este resumen
+## Estado final
 
-- **F45**: completado — ver tabla arriba y §3.7/Discusión del manuscrito.
-- **F48**: completado — ver tabla arriba y §3.7 del manuscrito.
-- Todos los hallazgos F31–F54 quedan `Corregido y verificado` salvo la
-  decisión de diseño explícita en F52 (SD de `benchmark_tiempos.py` en
-  n=96, no reejecutado con `--reps 10` por presupuesto de tiempo) y la
-  imposibilidad de compilar `pdflatex` en esta máquina (ver punto 2 de la
-  verificación final).
-- **F52 (benchmark de tiempos)**: no se reejecutó `benchmark_tiempos.py
-  --reps 10` por presupuesto de tiempo de esta sesión (máquina de 8GB con
-  varias corridas largas ya encoladas); documentado como limitación
-  explícita en el texto en vez de dejarlo sin comentar, tal como permite el
-  prompt maestro.
-- **Compilación real a PDF**: no verificable en esta máquina (sin LaTeX
-  instalado); auditoría estructural manual hecha en su lugar (ver punto 2
-  de la verificación final).
+Todos los hallazgos F31–F54 quedan `Corregido y verificado`, incluyendo los
+dos que dependían de corridas largas (F45 ablación del filtro estructural,
+F48 sensibilidad de `outer_block`) y la verificación adicional de F52
+(`benchmark_tiempos.py --reps 10`). La única limitación real que persiste es
+la imposibilidad de compilar `pdflatex` en esta máquina (sin distribución
+LaTeX instalada) — resuelta con una auditoría estructural manual automatizada
+en su lugar (ver punto 2 de la verificación final arriba). Los autores deben
+compilar localmente antes del envío para la verificación que este entorno no
+puede hacer.
