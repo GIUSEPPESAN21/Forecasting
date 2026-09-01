@@ -116,8 +116,9 @@ def seasonal_naive_scale(y_train: Sequence[float], m: int = 1) -> float:
 def mase(y_true, y_pred, y_train, m: int = 1) -> float:
     """Mean Absolute Scaled Error (Hyndman & Koehler, 2006). Metrica PRIMARIA de ranking.
 
-    Definicion exacta usada en todo el pipeline (F35, citada literalmente en
-    la Ecuacion 1 del manuscrito -ver F47-):
+    Definicion exacta usada en todo el pipeline (F35: la Ecuacion 1 del
+    manuscrito fue corregida en la Fase 14 para reflejar este mismo
+    escalado sobre el bloque de entrenamiento):
 
         MASE = MAD(y_true, y_pred) / scale
 
