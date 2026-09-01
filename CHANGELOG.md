@@ -269,3 +269,168 @@ No reabre ni edita F01-F25; la única excepción declarada de antemano
   el mismo resultado cualitativo en F01 (0% de casos satisfacen
   `es_muy_lineal`). `requirements.txt` fija las versiones usadas en este
   refactor para que el próximo auditor no tenga que reconciliar nada.
+
+## Fase 12 — Correcciones de la revisión externa de tutores (2026-08-31)
+
+Revisión externa de los tutores del proyecto: 2 bugs de código que invalidaban
+cifras ya impresas en `manuscritos/articulo_mdpi/template.tex`, 3 piezas de
+evidencia empírica faltantes, y un listado de problemas de redacción,
+encuadre narrativo, formato MDPI y bibliografía. Ver
+`RESUMEN_EJECUCION_FASE12.md` para el estado final detallado de cada
+hallazgo con su cifra antes/después.
+
+### Parte A — Código
+- **F31** — `codigo/forecasting_core/intervals.py`: sigma y el ancho de banda
+  de predicción podían angostarse con el horizonte por ruido de muestreo en
+  horizontes con pocos orígenes (evidencia: sigma 360,347,192,204,99,31,57,
+  65,24,1140,1195,1248 en `caso_ilustrativo_pronostico.csv`). Se fuerza
+  `sigma_h = max(sigma_empirico_h, sigma_1*sqrt(h), sigma_{h-1})` y la misma
+  regla sobre el ancho total de banda. Prueba: `codigo/tests/test_intervals.py`.
+  Regenerado: sigma ahora 360→1248 monótono.
+- **F32** — `codigo/experimentos/panel_publico.py::evaluate_one`: cuando el
+  ganador era `naive` (o `seasonal_naive`), `mase_naive` (o
+  `mase_seasonal_naive`) nunca se escribía — quedaba NaN, descartando 17 de
+  150 series de los agregados por régimen (el Wilcoxon en sí, que ya excluía
+  NaN por `dropna`, no estaba sesgado; los agregados por régimen y el
+  desglose W/T/L sí). Corregido: columnas independientes. Prueba:
+  `codigo/tests/test_panel_publico_mase_naive.py`. Rerun verificado:
+  95 victorias/17 empates/38 derrotas (63%/11%/25%), Wilcoxon W=2127.0
+  p<0.001 n=133 — confirma la cifra ya citada, ahora con el desglose
+  completo y los medianas de régimen correctas (antes con hasta 9 filas
+  faltantes por régimen).
+- **F33** — `codigo/experimentos/ablacion_filtro_estructural.py` (nuevo):
+  panel de 150 series con `structural_filter=True/False`. Prueba:
+  `codigo/tests/test_ablacion_filtro_estructural.py`. Resultado: ver
+  `RESUMEN_EJECUCION_FASE12.md`.
+- **F34** — `codigo/experimentos/vs_incumbente.py`: Wilcoxon
+  herramienta-vs-incumbente (`wtl_breakdown()`, extraída como función pura)
+  y desglose W/T/L vs. naive. Prueba: `codigo/tests/test_vs_incumbente_wtl.py`.
+  Rerun verificado (`--synthetic --n-series 40 --seed 20260824`): W=94.0
+  p=4.93e-6 n=40; WTL vs. naive 24/10/6.
+- **F35** — `codigo/forecasting_core/metrics.py::mase`: docstring precisa que
+  el denominador escala sobre `scale_train` (bloque de entrenamiento,
+  `y[:origins[0]]`), m=12 solo si se confirmó estacionalidad. Sin cambio de
+  comportamiento.
+- **F36** — `panel_publico.py` escribe `panel_publico_len{max_len}.csv` por
+  corrida (alias `panel_publico.csv` para el caso base); nuevo
+  `comparar_longitudes_panel.py`. Corridas a 24/36/48 (misma muestra,
+  semilla 20260824): n=24 → 0/150 series (protocolo de tres bloques
+  insatisfacible); n=36 → 150/150, MASE mediano 0.820 vs. naive 0.851, 50%;
+  n=48 → 150/150, 0.701 vs. 0.829, 63%.
+- **F37** — `montecarlo_clasificacion.py`: columnas `tipo_tendencia`/
+  `tipo_estacionalidad` (tamaño/potencia) y tabla de potencia en `report()`.
+  Los datos de potencia ya existían en `resultados/montecarlo_clasificacion.csv`
+  (generadores con tendencia verdadera a n=24/36/48/120, sin cambio de
+  lógica): potencia de tendencia en n=24 = 42.7% (lineal), 44.2% (deriva),
+  0% (tendencia+estacional); n=36: 91.4%/55.3%/80.8%.
+- **F38** — `codigo/forecasting_core/inventory.py`: docstrings de
+  `safety_stock`/`compute_policy` precisan que `z` es un cuantil normal
+  estándar y solo `sigma_L` es empírico. Sin cambio de comportamiento.
+- **F39** — `codigo/experimentos/sensibilidad_outer_block.py` (nuevo):
+  `outer_block` en {6,9,12}. Resultado: ver `RESUMEN_EJECUCION_FASE12.md`.
+- Fix adicional (no ligado a un F3X): `panel_publico.py` y
+  `comparar_longitudes_panel.py` ya no lanzan `KeyError`/`Traceback` cuando
+  un `--max-len` deja 0 series con ganador (caso real: n=24) — reportan el
+  motivo y salen limpio.
+- **Verificación de la Parte A**: `pytest codigo/tests` — 266 pruebas antes
+  (265 passed, 1 skipped) → 276 después (275 passed, 1 skipped, exit 0),
+  incluyendo las 10 pruebas nuevas de F31-F34.
+
+### Parte B — Reencuadre y anonimización del manuscrito
+- **F40** — Introducción reestructurada en 3 contribuciones explícitas.
+  Nueva Sección 3.7 "Measured Effect of Common Validation Pitfalls"
+  (`sec:pitfalls`) consolida las comparaciones antes/después dispersas.
+  Frases de encuadre de auditoría eliminadas o reescritas en Métodos/
+  Resultados/Discusión/Conclusiones/GenAI/disponibilidad de datos/nota de
+  bibliografía.
+- **F41** — Título reutilizado de la decisión previa del usuario. 0
+  ocurrencias de "Tuboplex" en el `.tex` (`grep -ic` verificado).
+  Introducida una sola vez como "a plastics manufacturing company
+  (hereafter, the reference company)". Abstract reescrito, 200 palabras
+  exactas (`wc -w` verificado sobre el bloque `\abstract{}`), sin prometer
+  "evidence from an industrial case study" sin sustento cuantitativo.
+  Declaración de revisión institucional alineada con la realidad (panel
+  sintético, no registros reales agregados). Nota interna sin terminar en
+  la Sección 3.4 eliminada. No se encontró ningún archivo real de datos de
+  la empresa en el repositorio ni en disco (búsqueda verificada) — se aplicó
+  la opción por defecto del prompt en su totalidad.
+
+### Parte C — Contenido técnico con cifras verificadas
+Cada cifra se verificó contra el CSV/log real antes de escribirse; ninguna
+se inventó. Ver `RESUMEN_EJECUCION_FASE12.md` para la tabla completa de
+verificación.
+- **F42** — Sección 3.6 reescrita como "Comparison Against External
+  Baselines (Prophet, LightGBM)" con `resultados/comparativa_externa.csv`
+  (ya existente, no afectado por la Parte A): herramienta 0.747, Prophet
+  0.785, LightGBM 0.893, naive 1.070 mediano global; 64%/72% victoria;
+  LightGBM gana en n=24 (0.798 vs. 0.909) y n=120 (0.388). Prophet 1.4.0,
+  LightGBM 4.7.0 vía mlforecast 1.1.0 (versiones verificadas con
+  `python -c "import prophet, lightgbm, mlforecast"`).
+- **F43** — Párrafo de la Figura 2 reescrito tras F31 (rerun de
+  `caso_ilustrativo.py`): sigma 360→1248 monótono, ya no "widens sharply
+  after month 9". Figura regenerada.
+- **F44** — Wilcoxon panel público con desglose completo (ver F32). Tabla 4
+  corregida: mediana de MASE naive en "seasonal, no trend" (0.962→0.940) y
+  "flat" (0.722→0.783, ahora marginalmente MEJOR que naive en mediana pero
+  con tasa de victoria de solo 45%, 25/56) tras poblar `mase_naive`/
+  `mase_seasonal_naive` para las filas donde ganó el benchmark
+  correspondiente.
+- **F45** — Ablación del filtro estructural: ver F33 /
+  `RESUMEN_EJECUCION_FASE12.md`.
+- **F46** — "19.9%" aclarado como mediana de mejoras por serie; "12.5%"
+  (mejora de medianas) como dato complementario explícito. Wilcoxon
+  herramienta-vs-incumbente W=94.0 p=4.9e-6 agregado. "60%" vs. naive
+  desglosado: 24 victorias/10 empates/6 derrotas.
+- **F47** — Ecuación 1 (MASE) y texto circundante alineados con el
+  docstring de F35 (denominador sobre `scale_train`, m=12/1 según
+  estacionalidad confirmada); frase ambigua eliminada.
+- **F48** — Sensibilidad de `outer_block`: ver F39 /
+  `RESUMEN_EJECUCION_FASE12.md`.
+- **F49** — Panel M3 corrido a tres longitudes reales (ver F36); limitación
+  de dominio explícita en Discusión (M3-Monthly no es demanda industrial;
+  24-35 obs sin validar con series reales).
+- **F50** — Potencia del test de tendencia (ver F37) agregada a
+  Limitaciones. Abstract/Conclusiones: "single digits" → "8.9% mean (max
+  15.8%)" con la cifra real de `montecarlo_clasificacion.csv`.
+- **F51** — Stock de seguridad reescrito como SS=z·sigma_L (z cuantil
+  normal, sigma_L empírico); aclarada la diferencia entre los 8 orígenes de
+  la Tabla 2 y los 10 orígenes internos de `compute_policy`.
+- **F52** — Terminología unificada a "Cochrane–Orcutt" (antes también
+  "GLSAR(1)"). Hardware consolidado en una sola descripción (AMD Ryzen 5
+  7000-series, 8 CPUs lógicos, 8GB RAM, Windows 11 build 26200 — verificado:
+  el "Windows 10" previo era un artefacto conocido de `platform.platform()`
+  en el mismo build 26200 que esta máquina). Objetivo de 25s aclarado como
+  aplicable solo a n≤48. "183s" del pipeline original marcado como medición
+  única, no comparable bajo el protocolo de 5 repeticiones de la Tabla 5.
+  SD alta en n=96 documentada como límite de la medición (5 repeticiones,
+  no reejecutado por presupuesto de tiempo).
+
+### Parte D — Higiene mecánica y bibliografía
+- **F53** — `\citeauthor{kerkkanen2009}` (incompatible con bibliografía
+  numérica) → texto fijo "Kerkkänen et al. [10]". Referencias cruzadas
+  Table~N/Figure~N escritas a mano → `\ref{}` (auditoría automática:
+  0 refs sin `\label{}` correspondiente, 0 cites sin `\bibitem`
+  correspondiente — script de verificación en el resumen de ejecución, sin
+  `pdflatex` disponible en esta máquina para compilar). Autorreferencia de
+  Sección 2.6 a sí misma corregida. Figura 1 regenerada: dos cajas "4."
+  duplicadas → 9 etapas únicas, con el bloque externo del protocolo de tres
+  bloques ahora explícito (antes ausente). Sección "Patents" (sin patentes)
+  eliminada. Nota de ORCID recortada a una línea. Notas internas en español
+  eliminadas. Declaración de uso de GenAI suavizada ("assisted in
+  implementing" en vez de "executed the reproducibility scripts that
+  produced the quantitative results"). Tabla de familia ganadora separa
+  naive/seasonal naive en columnas propias (antes "Benchmark (naive)"
+  mezclaba ambos).
+- **F54** — Bibliografía verificada con WebSearch (35 entradas, comentario
+  corregido de "33" a "35"): `talagala2021` → J. Forecast. 2023, 42,
+  1476–1501 (antes working paper Monash 2021); `mentzer2001` → Moon,
+  Mentzer & Smith, Int. J. Forecast. 2003, 19, 5–25 (antes J. Bus. Forecast.
+  2001, 20, 5–11, journal/año/volumen/páginas incorrectos); `chopra2021` →
+  7.ª ed. Pearson 2019 (antes 2021); `maack2024` → Vis. Comput. 2025, 41,
+  1485–1498, publicado online 2024; `ollechwebel2020` → versión publicada
+  J. Econom. Methods 2023, 12, 117–130 (no "Empirical Economics" como
+  sugería el prompt original — verificado que el articulo se publicó en
+  Journal of Econometric Methods, no en Empirical Economics; antes
+  Deutsche Bundesbank Discussion Paper 2020). Agregadas 2 referencias
+  nuevas para F42: `taylorletham2018` (Prophet, Am. Stat. 2018, 72, 37–45)
+  y `garza2022mlforecast` (mlforecast, Nixtla).
