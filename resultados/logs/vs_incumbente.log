@@ -1,7 +1,7 @@
 SIN Excel real: usando dataset sintetico que reproduce la estructura de la
 tesis (24-36 meses, series de proyectos de obra, picos, cambios abruptos).
 Este resultado verifica el pipeline de punta a punta; NO reemplaza la
-corrida sobre los datos reales de Tuboplex, que sigue pendiente.
+corrida sobre los datos reales de la empresa de referencia, que sigue pendiente.
 
   PRODUCTO-SINT-01             n= 42 | incumbente MASE=0.669 MAPE=  7.96% | herramienta (ses) MASE=0.556 MAPE=  6.57% | mejora +16.9%
   PRODUCTO-SINT-02             n= 30 | incumbente MASE=0.794 MAPE= 10.44% | herramienta (linear_regression) MASE=0.803 MAPE= 10.77% | mejora -1.2%
@@ -52,10 +52,17 @@ RESUMEN — dataset sintetico (pendiente de datos reales) (40 series)
   |ME| mediano   incumbente=217.1  naive=55.4  herramienta=111.9   (sesgo — no reportado antes, F06)
   Series donde la herramienta supera al incumbente: 32/40 (80%)
   Series donde la herramienta supera al naive      : 24/40 (60%)
-  Mejora mediana de MASE vs. incumbente: +19.9%
+  Mejora mediana de MASE por serie vs. incumbente (mediana de las mejoras individuales): +19.9%
+  Mejora de las medianas (MASE mediano incumbente -> herramienta, 0.922 -> 0.807): +12.5%  (dato complementario -no intercambiable con el anterior, F46)
+
+  Desglose herramienta vs. naive (n=40): 24 victorias, 10 empates (eligio naive), 6 derrotas
+
+  Prueba de Wilcoxon pareada (MASE herramienta vs. MASE incumbente):
+    W=94.0  p=4.93281e-06  n=40 (diferencias no nulas; de 40 pares totales)
 
   Prueba de Diebold-Mariano (H0: igual exactitud, perdida cuadratica):
     NOTA: por serie no siempre hay suficientes origenes (n>=4) para una
     prueba individual fiable; con pocas series el resultado es orientativo,
     no una conclusion definitiva de superioridad estadistica.
-C:\Users\LENOVO\OneDrive - uniminuto.edu\UNIANDES Research Projects\RESEARCH INVITADOS PROFE LUIS-DAVID\Forecasting\experiments\output\vs_incumbente.csv
+C:\Users\LENOVO\OneDrive - uniminuto.edu\UNIANDES Research Projects\RESEARCH INVITADOS PROFE LUIS-DAVID\Forecasting\resultados\vs_incumbente.csv
+Resumen: C:\Users\LENOVO\OneDrive - uniminuto.edu\UNIANDES Research Projects\RESEARCH INVITADOS PROFE LUIS-DAVID\Forecasting\resultados\vs_incumbente_resumen.csv
