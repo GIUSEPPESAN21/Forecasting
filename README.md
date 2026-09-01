@@ -1,4 +1,4 @@
-# Motor de Pronósticos — Tuboplex
+# Motor de Pronósticos
 
 <p align="center">
   <img src="https://img.shields.io/badge/python-3.11-blue" alt="Python 3.11">
@@ -335,7 +335,7 @@ python codigo/experimentos/montecarlo_clasificacion.py --reps 1000 --sizes 24 36
 # Caso ilustrativo end-to-end (Sección 3.2 del manuscrito)
 python codigo/experimentos/caso_ilustrativo.py
 
-# Herramienta vs. método incumbente de Tuboplex (Sección 3.3)
+# Herramienta vs. método incumbente de la empresa de referencia (Sección 3.3)
 python codigo/experimentos/vs_incumbente.py --synthetic --n-series 40 --seed 20260824
 # Con el archivo real de la empresa:
 python codigo/experimentos/vs_incumbente.py --input ruta/al/archivo.xlsx
@@ -426,7 +426,7 @@ acumula el portafolio completo en memoria (ver
 
 - Modelos univariados: no incorpora variables exógenas (p. ej. cartera
   adjudicada de proyectos de construcción).
-- Los datos reales de Tuboplex no están incluidos (confidencialidad
+- Los datos reales de la empresa de referencia no están incluidos (confidencialidad
   comercial); `codigo/experimentos/vs_incumbente.py` acepta el archivo real
   como reemplazo directo del panel sintético.
 - Con menos de ~36 observaciones mensuales la estacionalidad no es
@@ -443,4 +443,4 @@ MIT — ver [`LICENSE`](LICENSE).
 
 ---
 
-<p align="center"><a href="#motor-de-pronósticos--tuboplex">↑ Volver al inicio</a></p>
+<p align="center"><a href="#motor-de-pronósticos">↑ Volver al inicio</a></p>
