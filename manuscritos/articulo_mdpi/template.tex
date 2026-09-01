@@ -78,12 +78,12 @@
 %\newcommand{\orcidauthorB}{0000-0000-0000-000X}
 
 % Authors, for the paper (add full first names)
-\Author{Catalina Valles Gonzalez $^{1}$ and Luis Tarazona-Torres $^{1,}$*}
+\Author{Catalina Valles Gonz\'alez $^{1}$, Joseph Javier S\'anchez Acu\~na $^{1}$, Mar\'ia Paula Corral Ram\'irez $^{1}$, Luis Tarazona-Torres $^{1,}$* and David \'Alvarez-Mart\'inez $^{1}$}
 
 %\longauthorlist{yes}
 
 % MDPI internal command: Authors, for metadata in PDF
-\AuthorNames{Catalina Valles Gonzalez and Luis Tarazona-Torres}
+\AuthorNames{Catalina Valles Gonzalez, Joseph Javier Sanchez Acuna, Maria Paula Corral Ramirez, Luis Tarazona-Torres and David Alvarez-Martinez}
 
 % Affiliations / Addresses (Add [1] after \address if there is only one affiliation.)
 \address{%
@@ -103,11 +103,11 @@ $^{1}$ \quad Department of Industrial Engineering, Universidad de los Andes, Bog
 
 %\conference{} % An extended version of a conference paper
 
-% Abstract (Do not insert blank lines, i.e. \\) 
-\abstract{Demand forecasting for short industrial histories (24--48 monthly observations) is often left to manually computed moving averages with no systematic error evaluation. This study develops and validates a computational tool for this regime, built around a validation protocol: structural classification tests calibrated for short, autocorrelated series, a strict separation between hyperparameter tuning and reported performance, and a mandatory naive benchmark. A dedicated analysis quantifies each safeguard's effect on the reported conclusions: a circular selection-vs-naive comparison inflates the apparent win rate from 63\% to 100\%, and an uncalibrated trend test has a simulated false-positive rate of 74.4\%, reduced to 8.9\% under the corrected test. Evaluated under the corrected protocol, the tool improves on a reference company's incumbent three-period moving average by a median of 19.9\% in scaled error (MASE) per series on a synthetic panel reflecting its demand structure, and outperforms a naive benchmark on 63\% of 150 series from a public panel of short time series (Wilcoxon W=2127.0,\ p<0.001), and outperforms Prophet and LightGBM on most series across a range of lengths. The open-source framework, in Python with Dash, automates structurally-aware model selection, prediction intervals, and inventory-policy parameters end to end; every result is reproducible with a single seeded command.}
+% Abstract (Do not insert blank lines, i.e. \\)
+\abstract{Demand forecasting for short industrial histories (24--48 monthly observations) is often left to manually computed moving averages with no systematic error evaluation. This study develops and validates a computational tool for this regime, built around a validation protocol: structural classification tests calibrated for short, autocorrelated series, a strict separation between hyperparameter tuning and reported performance, and a mandatory naive benchmark. A dedicated analysis quantifies each safeguard's effect: a circular selection-vs-naive comparison inflates the apparent win rate from 63\% to 100\%, and an uncalibrated trend test's 74.4\% false-positive rate is held to a mean of 8.9\% by the sequential test adopted here. Under this protocol, the tool improves on a reference company's incumbent moving average by a median of 19.9\% in scaled error (MASE) on a synthetic panel reflecting its demand structure, beats a naive benchmark on 63\% of 150 public short time series (Wilcoxon W=2127.0,\ p<0.001), and beats Prophet and LightGBM on most series across a range of lengths, though its margin over Prophet is markedly less robust to resampling than its margin over LightGBM. The open-source Python/Dash framework automates structurally-aware model selection, prediction intervals, and inventory-policy parameters end to end, backed by a 276-test suite, with every result reproducible from one seeded command.}
 
 % Keywords
-\keyword{Demand forecasting; time series; short-history forecasting; feature-based model selection; nested cross-validation; MASE; walk-forward validation; production planning; inventory policy; open-source software.}
+\keyword{Demand forecasting; time series; short-history forecasting; feature-based model selection; nested cross-validation; MASE; walk-forward validation; Prophet; LightGBM; production planning; inventory policy; open-source software.}
 
 % The fields PACS, MSC, and JEL may be left empty or commented out if not applicable
 %\PACS{J0101}
@@ -138,21 +138,21 @@ $^{1}$ \quad Department of Industrial Engineering, Universidad de los Andes, Bog
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Different journals have different requirements. Please check the specific journal guidelines in the "Instructions for Authors" on the journal's official website.
-%\addhighlights{yes}
-%\renewcommand{\addhighlights}{%
-%
-%\noindent The goal is to increase the discoverability and readability of the article via search engines and other scholars. Highlights should not be a copy of the abstract, but a simple text allowing the reader to quickly and simplified find out what the article is about and what can be cited from it. Each of these parts should be devoted up to 2~bullet points.\vspace{3pt}\\
-%\textbf{What are the main findings?}
-% \begin{itemize}[labelsep=2.5mm,topsep=-3pt]
-% \item First bullet.
-% \item Second bullet.
-% \end{itemize}\vspace{3pt}
-%\textbf{What are the implications of the main findings?}
-% \begin{itemize}[labelsep=2.5mm,topsep=-3pt]
-% \item First bullet.
-% \item Second bullet.
-% \end{itemize}
-%}
+\addhighlights{yes}
+\renewcommand{\addhighlights}{%
+
+\noindent
+\textbf{What are the main findings?}
+ \begin{itemize}[labelsep=2.5mm,topsep=-3pt]
+ \item An open-source tool that automates feature-based forecasting method selection for short industrial demand histories improves on an incumbent moving average by a median of 19.9\% in scaled error and beats a naive benchmark on 63\% of 150 public short time series (Wilcoxon $p<0.001$).
+ \item Benchmarked under the same leakage-free, three-block protocol against Prophet and LightGBM on 50 series (5 structural regimes $\times$ 10 lengths, 24--180 observations), the tool attains the lowest overall median MASE (0.747 vs.\ 0.785 and 0.893), while a global LightGBM model wins specifically on flat and on zero-inflated, erratic series.
+ \end{itemize}\vspace{3pt}
+\textbf{What are the implications of the main findings?}
+ \begin{itemize}[labelsep=2.5mm,topsep=-3pt]
+ \item Structural classification tests calibrated for short samples, together with a strict separation between the blocks used to tune, to select, and to report, are what make an automated forecasting tool's accuracy claims interpretable; both are reusable in any short-history forecasting pipeline.
+ \item The regime-dependent result argues for admitting a global gradient-boosting comparator into the candidate pool specifically for zero-inflated, project-driven demand, rather than treating the absence of machine learning as a blanket, undifferentiated limitation.
+ \end{itemize}
+}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{document}
@@ -227,13 +227,13 @@ A further, distinct bias affects any comparison of the selected winning \emph{me
 \subsection{Error Metrics}
 \label{sec:metrics}
 
-The Mean Absolute Scaled Error is used as the primary ranking criterion,
+The Mean Absolute Scaled Error is used as the primary ranking criterion, following exactly the definition implemented in \texttt{forecasting\_core.metrics.mase},
 \begin{linenomath}
 \begin{equation}
-\mathrm{MASE} = \frac{\frac{1}{n}\sum_{t}|D_t - F_t|}{\frac{1}{n-m}\sum_{t=m+1}^{n}|D_t - D_{t-m}|},
+\mathrm{MASE} = \frac{\frac{1}{h}\sum_{t=1}^{h}|D_t - F_t|}{\frac{1}{n_{\text{train}}-m}\sum_{t=m+1}^{n_{\text{train}}}|Y_t - Y_{t-m}|},
 \end{equation}
 \end{linenomath}
-because it is scale-independent, always defined (including for series with zero-demand periods), and directly interpretable against the seasonal naive benchmark: $\mathrm{MASE}<1$ indicates the model outperforms the naive method in-scale \cite{hyndmankoehler2006}. Mean Absolute Deviation (MAD), Mean Squared Error (MSE), and Mean Absolute Percentage Error (MAPE, computed only over periods with non-zero observed demand, with the count of excluded periods reported) are retained as secondary, interpretable metrics. The Mean Error (ME) is additionally reported as a bias diagnostic --- its sign indicates whether a method systematically under- or over-forecasts, which MAD and MAPE cannot reveal, and which is the quantity that drives systematic stockouts or overstocks rather than the magnitude of the error alone.
+where $D_t$ and $F_t$ are the observed and forecast values over the $h$-point held-out evaluation block, and the denominator is the in-sample mean absolute error of the seasonal naive method, computed only on the training block $Y_1,\dots,Y_{n_{\text{train}}}$ that precedes the first evaluation origin --- never on the evaluation block or the full series. Here $m=12$ when the structural classification of Section~\ref{sec:classification} confirms seasonality and $m=1$ otherwise; $m$ is fixed by the series' own structural classification, not a free parameter. This is scale-independent, always defined (including for series with zero-demand periods), and directly interpretable against the seasonal naive benchmark: $\mathrm{MASE}<1$ indicates the model outperforms the naive method in-scale \cite{hyndmankoehler2006}. Mean Absolute Deviation (MAD), Mean Squared Error (MSE), and Mean Absolute Percentage Error (MAPE, computed only over periods with non-zero observed demand, with the count of excluded periods reported) are retained as secondary, interpretable metrics. The Mean Error (ME) is additionally reported as a bias diagnostic --- its sign indicates whether a method systematically under- or over-forecasts, which MAD and MAPE cannot reveal, and which is the quantity that drives systematic stockouts or overstocks rather than the magnitude of the error alone.
 
 \subsection{Hyperparameter Optimization}
 \label{sec:hyperopt}
@@ -243,7 +243,33 @@ For methods with hyperparameters (SES, Holt, Holt--Winters), a coarse grid is ev
 \subsection{Computational Implementation}
 \label{sec:implementation}
 
-Figure~\ref{fig:flowchart} summarizes the end-to-end flow, from data validation through the tuning/evaluation split and the outer-block protocol (Section~\ref{sec:validation}) to the forecast and inventory-policy output described below. The forecasting logic is implemented as a dependency-free Python package (\texttt{codigo/forecasting\_core}) using pandas, NumPy, SciPy, statsmodels, and statsforecast, with no import of the visualization or web layers; a thin Dash/Plotly application consumes this package to provide the interactive interface. This separation makes the statistical logic independently testable: the package ships with an automated test suite covering classification power and size, the absence of information leakage from the future into any one-step forecast, walk-forward parity across methods, exact-key model dispatch, absence of hyperparameter-selection bias, and memory-bounded multi-SKU batch processing. The architecture is modular, matching the four user-facing stages summarized in Table~\ref{tab:stages}: data upload and validation; structural classification and honest method evaluation; hyperparameter optimization under the nested protocol of Section~\ref{sec:hyperopt}; and final forecasting with prediction intervals, tabular export, and inventory-policy parameters (safety stock and reorder point) derived from the empirical distribution of the backtested forecast error.
+Figure~\ref{fig:flowchart} summarizes the end-to-end flow, from data validation through the tuning/evaluation split and the outer-block protocol (Section~\ref{sec:validation}) to the forecast and inventory-policy output described below. The forecasting logic is implemented as a dependency-free Python package (\texttt{codigo/forecasting\_core}) using pandas, NumPy, SciPy, statsmodels, and statsforecast, with no import of the visualization or web layers; a thin Dash/Plotly application consumes this package to provide the interactive interface. This separation makes the statistical logic independently testable: quality control is enforced by an automated test suite of 276 test cases distributed across 13 files (Table~\ref{tab:testsuite}), executed with \texttt{pytest} from the repository root. The suite is not a smoke test: each file targets a specific failure mode the protocol is designed to prevent and, by construction, fails against an implementation lacking the corresponding safeguard and passes against the one adopted here. The most consequential design decision in the suite is that leakage is verified \emph{behaviorally} rather than by code inspection: \texttt{test\_no\_leakage.py} perturbs the observations after a given origin and asserts that the one-step forecast at that origin is bit-for-bit unchanged, a property no model that reads forward in time can satisfy, which makes the guarantee robust to future refactoring in a way that a code review is not. The architecture is modular, matching the four user-facing stages summarized in Table~\ref{tab:stages}: data upload and validation; structural classification and honest method evaluation; hyperparameter optimization under the nested protocol of Section~\ref{sec:hyperopt}; and final forecasting with prediction intervals, tabular export, and inventory-policy parameters (safety stock and reorder point) derived from the empirical distribution of the backtested forecast error.
+
+\begin{table}[H]
+\caption{Automated test suite: files, number of collected test cases (\texttt{pytest --collect-only}), and the failure mode each prevents. Executed with \texttt{pytest} from the repository root.\label{tab:testsuite}}
+\centering
+\begin{tabularx}{\textwidth}{lcX}
+\toprule
+\textbf{Test file} & \textbf{Tests} & \textbf{Failure mode prevented} \\
+\midrule
+\texttt{test\_no\_leakage.py} & 42 & A forecast at origin $t$ depending on $y_{\geq t}$; verified by perturbing the future and asserting invariance of the forecast. \\
+\texttt{test\_walk\_forward\_parity.py} & 9 & Methods ranked on unequal numbers of origins; silent degradation of a seasonal model to its non-seasonal counterpart; unlogged structural exclusions. \\
+\texttt{test\_hyperopt\_no\_bias.py} & 11 & Tuning and evaluation blocks overlapping; a reported metric equal to the minimum of a hyperparameter sweep; an outer-block estimate contaminated by method selection. \\
+\texttt{test\_model\_registry.py} & 93 & Substring-based method resolution; silent fallback to a random walk; unbounded hyperparameter grids; loss of any of the eleven candidates from the registry. \\
+\texttt{test\_metrics.py} & 15 & MAPE diverging on zero-demand periods; MASE undefined on a constant reference series; ME confused with MAD; non-finite predictions propagating as NaN. \\
+\texttt{test\_classification.py} & 24 & Trend or seasonality verdicts inconsistent with the sequential test specification of Section~\ref{sec:classification}; an eligibility rule that no method can satisfy (Section~\ref{sec:pitfalls}). \\
+\texttt{test\_data\_loading.py} & 45 & Silent imputation of gaps or duplicates; ambiguous decimal conventions; acceptance of a series too short to validate. \\
+\texttt{test\_batch\_memory.py} & 15 & Unbounded memory growth on multi-SKU panels (marked slow; profiled explicitly). \\
+\texttt{test\_intervals.py} & 4 & A prediction interval that narrows with the forecast horizon (F31), which has no physical interpretation. \\
+\texttt{test\_external\_baselines.py} & 12 & The core suite silently depending on the optional Prophet/\texttt{mlforecast} packages; each is skipped gracefully, by class, when unavailable. \\
+\texttt{test\_ablacion\_filtro\_estructural.py} & 1 & The structural-filter ablation of Section~\ref{sec:pitfalls} comparing a different, reordered, or discarded set of series between the filter-on and filter-off runs. \\
+\texttt{test\_panel\_publico\_mase\_naive.py} & 2 & The \texttt{mase\_naive} column silently left unpopulated when the winning method is naive itself, which had previously discarded 17 of 150 series from the Wilcoxon test of Section~\ref{sec:panel}. \\
+\texttt{test\_vs\_incumbente\_wtl.py} & 3 & An incorrect win/tie/loss breakdown against the incumbent, verified against a hand-solved case. \\
+\midrule
+\textbf{Total} & \textbf{276} & \\
+\bottomrule
+\end{tabularx}
+\end{table}
 
 Prediction intervals are constructed from empirical quantiles of the walk-forward forecast error at each horizon $h$ (up to \texttt{n\_origins}$=10$ backtest origins), rather than from an analytic formula that would assume normality or a model-specific predictive distribution; when fewer than eight origins are available at a given horizon, the interval falls back to a documented normal--$\sqrt{h}$ approximation, and the tool reports explicitly which of the two methods was used. Because either source of a horizon's interval width is itself an estimate from a small sample, the raw per-horizon width is not guaranteed to grow monotonically with $h$; the tool enforces $\sigma_h \geq \max(\sigma_h^{\text{empirical}},\, \sigma_1\sqrt{h},\, \sigma_{h-1})$ and the corresponding non-decreasing constraint on the interval's total width, so that the reported band never narrows at a longer horizon than at a shorter one purely as an artifact of sampling noise in the backtest.
 
@@ -271,11 +297,11 @@ Forecasting with the selected method & Historical demand, out-of-sample fitted v
 \subsection{Data, Code, and Availability}
 \label{sec:availability}
 
-All computer code associated with this study is publicly available at submission time at \url{https://github.com/GIUSEPPESAN21/Forecasting}, including the dependency-free forecasting package (\texttt{codigo/forecasting\_core}), the Dash application, the full automated test suite, and the reproducibility scripts used to generate every quantitative result reported in Section~\ref{sec:results} (\texttt{codigo/experimentos/vs\_incumbente.py}, \texttt{codigo/experimentos/panel\_publico.py}, \texttt{codigo/experimentos/benchmark\_tiempos.py}, \texttt{codigo/experimentos/montecarlo\_clasificacion.py}, \texttt{codigo/experimentos/comparativa\_externa.py}, \texttt{codigo/experimentos/ablacion\_filtro\_estructural.py}, and \texttt{codigo/experimentos/sensibilidad\_outer\_block.py}), each runnable with a single command and a fixed random seed. A versioned release will be archived on Zenodo with a permanent DOI upon acceptance. The reference company's historical sales records that motivated the diagnosis of Section~\ref{sec:diagnosis} are proprietary and are not redistributed; the repository instead ships a synthetic panel that reproduces the structural characteristics documented there (short, volatile, project-driven series with abrupt level changes), so that every script in the repository can be executed end to end without access to any company's data. The public benchmark panel used in Section~\ref{sec:panel} (M3-Monthly) is downloaded automatically by \texttt{codigo/experimentos/panel\_publico.py} from its original public source \cite{makridakis2020m3}.
+All computer code associated with this study is publicly available at submission time at \url{https://github.com/GIUSEPPESAN21/Forecasting}, including the dependency-free forecasting package (\texttt{codigo/forecasting\_core}), the Dash application, and the full automated test suite (Table~\ref{tab:testsuite}). Eight reproducibility scripts under \texttt{codigo/experimentos/} generate every quantitative result reported in Section~\ref{sec:results}, each runnable with a single command and a fixed random seed: \texttt{vs\_incumbente.py} and \texttt{panel\_publico.py} for the incumbent and public-panel comparisons; \texttt{benchmark\_tiempos.py} for computational performance; \texttt{montecarlo\_clasificacion.py} for the classification-test validation; \texttt{comparativa\_externa.py} and \texttt{analisis\_sensibilidad\_ci.py} for the external comparison and its sensitivity analysis; and \texttt{ablacion\_filtro\_estructural.py} and \texttt{sensibilidad\_outer\_block.py} for the two robustness checks of Section~\ref{sec:pitfalls}. A versioned release will be archived on Zenodo with a permanent DOI upon acceptance. The reference company's historical sales records that motivated the diagnosis of Section~\ref{sec:diagnosis} are proprietary and are not redistributed; the repository instead ships a synthetic panel that reproduces the structural characteristics documented there (short, volatile, project-driven series with abrupt level changes), so that every script in the repository can be executed end to end without access to any company's data. The public benchmark panel used in Section~\ref{sec:panel} (M3-Monthly) is downloaded automatically by \texttt{codigo/experimentos/panel\_publico.py} from its original public source \cite{makridakis2020m3}.
 
 \subsection{Use of Generative Artificial Intelligence (GenAI)}
 \label{sec:genai}
-A generative AI system (Claude, Anthropic) was used under direct author supervision to assist in implementing the statistical validation pipeline described in Section~\ref{sec:methods} (structural classification tests, the nested tuning/evaluation protocol, and the prediction-interval and inventory-policy modules) and in drafting portions of this manuscript text, based on methodological specifications and literature explicitly selected by the authors. All methodological decisions --- including the choice of MASE as the primary ranking metric, the sequential seasonality-then-trend classification order, the tuning/evaluation split, and the inclusion of automated ARIMA/ETS/Theta and external Prophet/LightGBM baselines --- were specified by the authors, who independently re-ran the accompanying reproducibility scripts and verified the statistical results reported in Section~\ref{sec:results} against their output. No automated system was used to generate or fabricate empirical data, company records, or citations; every reference in this manuscript corresponds to a verifiable publication.
+A generative AI system (Claude, Anthropic) was used under direct author supervision to assist in implementing the statistical validation pipeline described in Section~\ref{sec:methods} (structural classification tests, the nested tuning/evaluation protocol, and the prediction-interval and inventory-policy modules), executing the reproducibility scripts that produced the quantitative results reported in Section~\ref{sec:results}, including the Spearman rank-correlation and bootstrap analysis of Section~\ref{sec:sensitivity}, and drafting portions of this manuscript text, based on methodological specifications and literature explicitly selected by the authors. All methodological decisions --- including the choice of MASE as the primary ranking metric, the sequential seasonality-then-trend classification order, the tuning/evaluation split, the inclusion of automated ARIMA/ETS/Theta and external Prophet/LightGBM baselines, and the interpretation of every result reported here, including the explicit finding that the tool's advantage over Prophet is statistically significant but not robust to resampling --- were specified and reviewed by the authors, who bear sole responsibility for it and who independently verified each reported statistic by re-running the accompanying scripts. No automated system was used to generate or fabricate empirical data, company records, or citations; every reference in this manuscript corresponds to a verifiable publication.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Results}
@@ -285,6 +311,17 @@ A generative AI system (Claude, Anthropic) was used under direct author supervis
 \label{sec:diagnosis}
 
 A qualitative diagnosis of the forecasting process used by the reference company identified several methodological limitations that motivate this study. Forecasts were produced with a manually computed three-period moving average in spreadsheets, applied uniformly to every product regardless of its trend, seasonality, or stationarity characteristics. No error metric (ME, MAD, MSE, or MAPE) was systematically computed, so the historical accuracy of the incumbent method cannot be assessed from the company's own records, and forecast responsibility was not clearly assigned across products. This is consistent with survey evidence that a large share of firms do not formally evaluate forecast error \cite{kerkkanen2009}. This diagnosis is reported here strictly as \emph{motivation}: it is a qualitative description of a practice, not a numerical accuracy figure for the incumbent method, and it is not itself an evaluated result. The quantitative comparisons that the paper's accuracy claims rest on are the synthetic-panel and public-panel validations of Sections~\ref{sec:incumbente} and~\ref{sec:panel}, which reproduce the demand structure documented here rather than depending on it.
+
+\subsection{Validation of the Structural Classification Tests}
+\label{sec:mcvalidation}
+
+Before any accuracy figure can be interpreted, the structural classification step on which every downstream candidate-pool restriction depends (Section~\ref{sec:classification}) must itself be shown to be statistically reliable. Figure~\ref{fig:montecarlo} reports the same Monte Carlo validation summarized in Section~\ref{sec:classification} (1000 replicates per scenario, series lengths of 24, 36, 48, and 120 months; \texttt{codigo/experimentos/montecarlo\_clasificacion.py}), broken down by scenario and length rather than only as the two aggregate rates already cited. Panel (A) shows that the residual false-positive rate of the adopted trend test is not uniform across data-generating processes: it sits close to the nominal 5\% for white noise and for clean trend-free scenarios, but remains elevated for the random-walk scenario (11.7--15.8\% across lengths), a known consequence of the ADF pre-test's reduced power to reject a unit root at these sample sizes rather than a defect of the trend step that follows it. Panel (B) shows the adopted seasonality test at or below its nominal rate in every scenario and at every length for which seasonality is evaluable at all ($n\geq 36$); at $n=24$ seasonality is reported as \emph{not evaluable} by construction (Section~\ref{sec:classification}) and is therefore omitted from the panel rather than assigned a false-positive rate. Panel (C) places the two aggregate rates side by side against the 5\% nominal-size reference: the common shortcuts this design was chosen to avoid --- an unweighted regression $p$-value for trend and a raw lag-12 autocorrelation threshold for seasonality --- reach 74.4\% and 50.2\%, against 8.9\% and 1.4\% for the tests adopted here.
+
+\begin{figure}[H]
+    \includegraphics[width=\textwidth]{figures/fig2_montecarlo_clasificacion.png}
+    \caption{Monte Carlo validation of the structural classification tests (1000 replicates per scenario, seed 20260824). (A) and (B): false-positive rate of the adopted trend and seasonality tests, respectively, by data-generating scenario (ground truth: no trend / no seasonality) and series length; the $n=24$ column is omitted from Panel (B) because seasonality is not evaluable below three annual cycles. (C) Mean false-positive rate aggregated across scenarios, common shortcut versus adopted test, against the 5\% nominal-size reference (dotted line).}
+    \label{fig:montecarlo}
+\end{figure}
 
 \subsection{Illustrative Walkthrough of the Tool}
 \label{sec:walkthrough}
@@ -405,7 +442,17 @@ An empirical power-law fit, $\text{time} \approx 0.058 \cdot n^{1.34}$, characte
 \subsection{Comparison Against External Baselines (Prophet, LightGBM)}
 \label{sec:autobaselines}
 
-Beyond the classical and automated-statistical candidates internal to the tool's own pool (Section~\ref{sec:methodsincluded}), the protocol is also compared against two external, popular automated forecasting libraries not included in that pool: Prophet 1.4.0 \cite{taylorletham2018} and a gradient-boosted-tree regressor, LightGBM 4.7.0, wrapped through \texttt{mlforecast} 1.1.0 with lagged-demand and rolling-mean features \cite{garza2022mlforecast}. Both are fitted and evaluated with the same outer-block protocol as the tool's own selected method (\texttt{forecasting\_core.optimize.honest\_outer\_estimate}; \texttt{codigo/external\_baselines}), on a synthetic panel spanning ten series lengths from 24 to 180 monthly observations (five structural regimes $\times$ five seeds per length; \texttt{codigo/experimentos/comparativa\_externa.py}), so that the comparison covers both the short-history regime this tool targets and longer series where a more data-hungry method has more to work with.
+Beyond the classical and automated-statistical candidates internal to the tool's own pool (Section~\ref{sec:methodsincluded}), the protocol is also compared against two external, popular automated forecasting libraries not included in that pool: Prophet 1.4.0 \cite{taylorletham2018} and a gradient-boosted-tree regressor, LightGBM 4.7.0 \cite{ke2017lightgbm}, wrapped through \texttt{mlforecast} 1.1.0 with lagged-demand and rolling-mean features \cite{garza2022mlforecast}. Both are fitted and evaluated with the same outer-block protocol as the tool's own selected method (\texttt{forecasting\_core.optimize.honest\_outer\_estimate}; \texttt{codigo/external\_baselines}), on a synthetic panel spanning ten series lengths from 24 to 180 monthly observations (five structural regimes $\times$ five seeds per length; \texttt{codigo/experimentos/comparativa\_externa.py}), so that the comparison covers both the short-history regime this tool targets and longer series where a more data-hungry method has more to work with.
+
+\begin{figure}[H]
+    \includegraphics[width=0.85\textwidth]{figures/fig_c1_boxplot_mase.png}
+    \caption{Distribution of external-block MASE by method across the 50-series comparison (diamonds mark the mean; the dashed line marks MASE=1, parity with the in-sample seasonal-naive benchmark).}
+    \label{fig:boxplotmase}
+\end{figure}
+
+Table~\ref{tab:externo} and Figures~\ref{fig:boxplotmase}--\ref{fig:masevslongitud} summarize the result (\texttt{resultados/comparativa\_externa.csv}, 50 series). Across the full panel, the tool's selected method has the lowest median MASE (0.747), ahead of Prophet (0.785) and LightGBM (0.893), and all three outperform the naive benchmark (1.070) on the median series. The tool's selected method outperforms Prophet on 64\% of series (Wilcoxon signed-rank $W=428.0,\ p=0.043$) and LightGBM on 72\% ($W=332.0,\ p=0.003$); both differences are significant at the 5\% level, though the margin against Prophet is markedly narrower. Both external comparators are, in their own right, significantly more accurate than the naive benchmark (Prophet: $W=295.0,\ p<0.001$, 74\% win rate; LightGBM: $W=341.0,\ p=0.004$, 66\% win rate), which indicates that the tool's advantage over them reflects a genuine, if moderate and unevenly robust, margin over two competent comparators rather than an artifact of comparing against artificially weakened baselines. Figure~\ref{fig:boxplotmase} shows the full distribution of external-block MASE by method rather than only its median: the tool has the lowest median and an interquartile range comparable to that of the naive benchmarks, while Prophet and LightGBM show broader upper tails, consistent with a small number of series --- typically the shortest and most erratic --- on which a heavier, more parametrized model overfits a thin tuning history.
+
+This ordering is not uniform across series length, however: at the shortest length evaluated ($n=24$), LightGBM has the lowest median MASE (0.798, against 0.909 for the tool and 0.948 for Prophet), and it is again the strongest method at $n=120$ (0.388); Figure~\ref{fig:masevslongitud} shows the tool's selected method and Prophet crossing LightGBM's median at several intermediate lengths rather than one method dominating throughout. This is consistent with the same competition evidence discussed in Section~\ref{sec:discussion}: no single method, classical or automated, dominates across all regimes and lengths, and a boosted-tree regressor with lag features can be competitive precisely where a longer history gives it enough rows to learn from, even in the moderately short regime this tool targets.
 
 \begin{figure}[H]
     \includegraphics[width=0.85\textwidth]{figures/fig_c2_mase_vs_longitud.png}
@@ -413,7 +460,11 @@ Beyond the classical and automated-statistical candidates internal to the tool's
     \label{fig:masevslongitud}
 \end{figure}
 
-Table~\ref{tab:externo} and Figure~\ref{fig:masevslongitud} summarize the result (\texttt{resultados/comparativa\_externa.csv}, 50 series). Across the full panel, the tool's selected method has the lowest median MASE (0.747), ahead of Prophet (0.785) and LightGBM (0.893), and all three outperform the naive benchmark (1.070) on the median series. The tool's selected method outperforms Prophet on 64\% of series and LightGBM on 72\%. This ordering is not uniform across series length, however: at the shortest length evaluated ($n=24$), LightGBM has the lowest median MASE (0.798, against 0.909 for the tool and 0.948 for Prophet), and it is again the strongest method at $n=120$ (0.388); Figure~\ref{fig:masevslongitud} shows the tool's selected method and Prophet crossing LightGBM's median at several intermediate lengths rather than one method dominating throughout. This is consistent with the same competition evidence discussed in Section~\ref{sec:discussion}: no single method, classical or automated, dominates across all regimes and lengths, and a boosted-tree regressor with lag features can be competitive precisely where a longer history gives it enough rows to learn from, even in the moderately short regime this tool targets.
+\begin{figure}[H]
+    \includegraphics[width=0.85\textwidth]{figures/fig_c3_panel_regimenes.png}
+    \caption{Illustrative 12-month forecast, tool vs.\ Prophet vs.\ LightGBM, on four representative structural regimes plotted over the full available history. This is a qualitative illustration of the three methods' behavior, not a substitute for the honest, external-block performance underlying it, which is reported in Table~\ref{tab:externo} and Figures~\ref{fig:boxplotmase}--\ref{fig:masevslongitud}.}
+    \label{fig:panelregimenes}
+\end{figure}
 
 \begin{table}[H]
 \caption{Median MASE by method, held-out outer block, synthetic panel spanning 24--180 observations ($n=$50 series). Reproducible with \texttt{codigo/experimentos/comparativa\_externa.py}.\label{tab:externo}}
@@ -451,6 +502,19 @@ All regimes & 49\% & 25\% & 9\% & 11\% & 5\% \\
 
 Table~\ref{tab:ganadores} shows the result by regime. Across the full panel, classical smoothing or regression methods are the winning family on 49\% of series, against 34\% for an automated AICc-selected variant (25\% ARIMA/SARIMA, 9\% ETS/Theta) and 16\% for the naive or seasonal naive benchmark combined (11\% and 5\%, respectively). Automated selection is most valuable precisely where classical methods are weakest structurally: in the seasonal regimes (seasonal-plus-trend and seasonal-plain), automated ARIMA/SARIMA and ETS/Theta together win 43\% and 65\% of series respectively, more than doubling their combined share in the non-seasonal regimes (21\% and 23\%). This pattern --- simple methods remaining highly competitive overall, with automation earning its cost specifically on the more structurally demanding series --- is consistent with evidence from large-scale forecasting competitions that simple statistical methods are strong baselines in short, low-noise regimes \cite{makridakis2020}, and, together with the external comparison above, it argues for retaining classical, automated-statistical, and machine-learning candidates side by side rather than committing to any one family.
 
+\subsection{Sensitivity Analysis of the External Comparison}
+\label{sec:sensitivity}
+
+The regime-level pattern of Table~\ref{tab:externo} and Figure~\ref{fig:masevslongitud} --- LightGBM's median MASE falling to its lowest value in the sweep at $n=120$ --- raises the question of whether the tool's relative standing against the two external comparators depends systematically on series length, rather than reflecting sampling noise from the five series available at each sampled length. This is tested with a Spearman rank correlation, computed on the full 50-series external comparison, between series length $n$ and (i) each method's own MASE and (ii) the paired tool-minus-comparator MASE difference (\texttt{codigo/experimentos/analisis\_sensibilidad\_ci.py}, reusing the \texttt{comparativa\_externa.csv} artifact of Table~\ref{tab:externo}). None of these correlations reaches conventional significance: length correlates weakly and non-significantly with the tool's own MASE ($\rho=-0.213$, $p=0.138$), with Prophet's ($\rho=-0.254$, $p=0.076$), and essentially not at all with LightGBM's ($\rho=-0.022$, $p=0.880$); the paired tool-minus-LightGBM difference is likewise uncorrelated with length ($\rho=-0.192$, $p=0.182$), as is the tool-minus-Prophet difference ($\rho=+0.062$, $p=0.666$). Read together with Figure~\ref{fig:masevslongitud}, this indicates that LightGBM's single low median at $n=120$ is consistent with sampling variability under five series per length rather than with a confirmed, monotonic length effect: the local-versus-global mechanism proposed in Section~\ref{sec:autobaselines} remains a reasonable hypothesis but this design is under-powered to confirm it directly, and a length-stratified design with more than five series per cell is the natural next step for testing it.
+
+Percentile bootstrap 95\% confidence intervals (10,000 resamples, fixed seed) on the statistics of Table~\ref{tab:externo} add a further, specific caution for the Prophet comparison. The median paired difference (tool $-$ Prophet) is $-0.042$ MASE points, 95\% CI $[-0.115, -0.005]$, and the tool's win rate against Prophet, 95\% CI $[50\%, 78\%]$, has a lower bound at the chance level despite the point estimate (64\%) and the Wilcoxon test ($p=0.043$) both favoring the tool. The corresponding interval against LightGBM is comfortably clear of both null values (median difference $-0.134$, 95\% CI $[-0.254,-0.041]$; win rate 72\%, 95\% CI $[58\%,84\%]$). The two external comparisons are therefore not equally conclusive: the tool's advantage over LightGBM is robust under resampling, while its advantage over Prophet, though statistically significant by the Wilcoxon test, is the more fragile of the two findings in this manuscript and should be weighted accordingly in any decision that relies on it.
+
+\begin{figure}[H]
+    \includegraphics[width=0.85\textwidth]{figures/fig_c4_bootstrap_winrate.png}
+    \caption{Bootstrap distribution (10,000 resamples) of the tool's win rate against Prophet and against LightGBM on the 50-series external comparison. The dashed line marks the 50\% chance level. The Prophet distribution's left tail reaches the chance level, while the LightGBM distribution clears it with margin.}
+    \label{fig:bootstrap}
+\end{figure}
+
 \subsection{Measured Effect of Common Validation Pitfalls}
 \label{sec:pitfalls}
 
@@ -469,7 +533,7 @@ Two further quantities complete this account without fitting the same before/aft
 \section{Discussion}
 \label{sec:discussion}
 
-The results support a narrower and more specific claim than an unqualified statement that the tool "improves accuracy." The structural filter, evaluated on the illustrative case of Section~\ref{sec:walkthrough}, behaves as intended: methods incompatible with a confirmed trend are excluded with a logged reason, consistent with feature-based model selection research showing that restricting candidates to those compatible with a series' structural features improves robustness relative to an unconstrained comparison \cite{monteromanso2020,talagala2021}. The ablation of Section~\ref{sec:pitfalls} answers the research question posed in the Introduction directly: disabling the filter on the public panel moves the median MASE by only 0.014 (0.701 to 0.715) and the win rate against naive by 0.6 percentage points, so most of the tool's measured advantage over naive is attributable to the rest of the protocol --- honest tuning/evaluation separation, the outer block, and mandatory benchmarks --- rather than to structural filtering itself, which nonetheless contributes a small, consistent improvement and functions as a robustness safeguard rather than the primary source of accuracy. At the same time, the incumbent-method comparison of Section~\ref{sec:incumbente} shows that the tool's advantage over the incumbent is not universal: on a materially sized synthetic sample reproducing the reference company's demand structure, the tool's selected method underperforms a fixed three-period moving average on a non-trivial share of series, most visibly on short, low-noise series where the incumbent's simplicity is close to optimal and where a more flexible automatically-selected model can overfit the small tuning block available. This pattern is consistent with the broader finding from large-scale forecasting competitions that simple statistical methods remain highly competitive, particularly for short, low-noise series \cite{makridakis2020}, and the same pattern recurs in the flat regime of the public-panel validation (Section~\ref{sec:panel}) and in LightGBM's competitiveness at short lengths in the external comparison (Section~\ref{sec:autobaselines}): no single method or method family is uniformly best, and the value of this protocol is in selecting among candidates under an honest evaluation, not in any one candidate being unconditionally superior.
+The results support a narrower and more specific claim than an unqualified statement that the tool "improves accuracy." The structural filter, evaluated on the illustrative case of Section~\ref{sec:walkthrough}, behaves as intended: methods incompatible with a confirmed trend are excluded with a logged reason, consistent with feature-based model selection research showing that restricting candidates to those compatible with a series' structural features improves robustness relative to an unconstrained comparison \cite{monteromanso2020,talagala2021}. The ablation of Section~\ref{sec:pitfalls} answers the research question posed in the Introduction directly: disabling the filter on the public panel moves the median MASE by only 0.014 (0.701 to 0.715) and the win rate against naive by 0.6 percentage points, so most of the tool's measured advantage over naive is attributable to the rest of the protocol --- honest tuning/evaluation separation, the outer block, and mandatory benchmarks --- rather than to structural filtering itself, which nonetheless contributes a small, consistent improvement and functions as a robustness safeguard rather than the primary source of accuracy. At the same time, the incumbent-method comparison of Section~\ref{sec:incumbente} shows that the tool's advantage over the incumbent is not universal: on a materially sized synthetic sample reproducing the reference company's demand structure, the tool's selected method underperforms a fixed three-period moving average on a non-trivial share of series, most visibly on short, low-noise series where the incumbent's simplicity is close to optimal and where a more flexible automatically-selected model can overfit the small tuning block available. This pattern is consistent with the broader finding from large-scale forecasting competitions that simple statistical methods remain highly competitive, particularly for short, low-noise series \cite{makridakis2020}, and the same pattern recurs in the flat regime of the public-panel validation (Section~\ref{sec:panel}) and in LightGBM's competitiveness at short lengths in the external comparison (Section~\ref{sec:autobaselines}): no single method or method family is uniformly best, and the value of this protocol is in selecting among candidates under an honest evaluation, not in any one candidate being unconditionally superior. The sensitivity analysis of Section~\ref{sec:sensitivity} adds a further qualification specific to the external comparison: the tool's advantage over LightGBM survives bootstrap resampling comfortably, but its advantage over Prophet, while significant by the Wilcoxon test, has a bootstrap win-rate interval that touches the 50\% chance level, so that comparison should be read as suggestive rather than conclusive on its own.
 
 The public-panel validation of Section~\ref{sec:panel} addresses a limitation that no single-case study can: with a large enough sample of independent series, an aggregate significance test becomes possible. Reporting a Wilcoxon signed-rank result and a full win/tie/loss breakdown alongside the median MASE, rather than a MASE figure in isolation, is what makes the regime-level heterogeneity in Table~\ref{tab:panel} --- the tool winning outright on fewer than half of flat-regime series despite a near-tied median, against clear majority wins on trending series --- visible in the first place; a single pooled accuracy figure would have hidden it.
 
@@ -518,7 +582,7 @@ The practical contribution is a fully reproducible, tested, open-source computat
 %}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\authorcontributions{Conceptualization, C.V.G. and L.T.-T.; methodology, C.V.G. and L.T.-T.; software, C.V.G.; validation, C.V.G. and L.T.-T.; formal analysis, C.V.G. and L.T.-T.; investigation, C.V.G.; resources, L.T.-T.; data curation, C.V.G.; writing---original draft preparation, C.V.G.; writing---review and editing, L.T.-T.; visualization, C.V.G.; supervision, L.T.-T.; project administration, L.T.-T. All authors have read and agreed to the published version of the manuscript.}
+\authorcontributions{Conceptualization, C.V.G., L.T.-T.\ and D.\'A.-M.; methodology, C.V.G., J.J.S.-A., L.T.-T.\ and D.\'A.-M.; software, C.V.G., J.J.S.-A.\ and M.P.C.R.; validation, C.V.G., J.J.S.-A., M.P.C.R.\ and L.T.-T.; formal analysis, C.V.G., J.J.S.-A.\ and D.\'A.-M.; investigation, C.V.G., J.J.S.-A.\ and M.P.C.R.; resources, L.T.-T.\ and D.\'A.-M.; data curation, C.V.G., J.J.S.-A.\ and M.P.C.R.; writing---original draft preparation, C.V.G., J.J.S.-A.\ and M.P.C.R.; writing---review and editing, L.T.-T.\ and D.\'A.-M.; visualization, C.V.G.\ and M.P.C.R.; supervision, L.T.-T.\ and D.\'A.-M.; project administration, L.T.-T. All authors have read and agreed to the published version of the manuscript.}
 
 \funding{This research received no external funding.}
 
@@ -576,7 +640,7 @@ STL & Seasonal-Trend decomposition using Loess
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % No appendix: every table and figure in this manuscript is cited in the main
 % text, and all supplementary material (test suite, experiment scripts, and
-% their output) is referenced via the repository in Section 2.8.
+% their output) is referenced via the repository in Section~\ref{sec:availability}.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %\isPreprints{}{% This command is only used for ``preprints''.
 \begin{adjustwidth}{-\extralength}{0cm}
@@ -600,7 +664,7 @@ STL & Seasonal-Trend decomposition using Loess
 % Numeric (ACS) format, as required for the journal Forecasting.
 % Every entry below corresponds to a verifiable publication; none was
 % generated or approximated by the GenAI system used in this revision
-% (Section 2.9). 35 entries.
+% (Section~\ref{sec:genai}). 36 entries.
 \begin{thebibliography}{99}
 
 \bibitem{mentzer2001}
@@ -631,7 +695,7 @@ Sattar, M.U.; Dattana, V.; Hasan, R.; Mahmood, S.; Khan, H.W.; Hussain, S. Enhan
 Nahmias, S.; Olsen, T.L. \textit{Production and Operations Analysis}, 7th ed.; Waveland Press: Long Grove, IL, USA, 2015.
 
 \bibitem{kerkkanen2009}
-Kerk\"{a}nen, A.; Korpela, J.; Huiskonen, J. Demand forecasting errors in industrial context: Measurement and impacts. \textit{Int. J. Prod. Econ.} \textbf{2009}, \textit{118}, 43--48.
+Kerkk\"{a}nen, A.; Korpela, J.; Huiskonen, J. Demand forecasting errors in industrial context: Measurement and impacts. \textit{Int. J. Prod. Econ.} \textbf{2009}, \textit{118}, 43--48.
 
 \bibitem{makridakis2018}
 Makridakis, S.; Spiliotis, E.; Assimakopoulos, V. Statistical and machine learning forecasting methods: Concerns and ways forward. \textit{PLoS ONE} \textbf{2018}, \textit{13}, e0194889.
@@ -704,6 +768,9 @@ Taylor, S.J.; Letham, B. Forecasting at scale. \textit{Am. Stat.} \textbf{2018},
 
 \bibitem{garza2022mlforecast}
 Nixtla. \textit{mlforecast: Scalable Machine Learning for Time Series Forecasting}; Nixtla: San Francisco, CA, USA, 2022. Available online: \url{https://github.com/Nixtla/mlforecast} (accessed on 24 August 2026).
+
+\bibitem{ke2017lightgbm}
+Ke, G.; Meng, Q.; Finley, T.; Wang, T.; Chen, W.; Ma, W.; Ye, Q.; Liu, T.-Y. LightGBM: A highly efficient gradient boosting decision tree. In \textit{Advances in Neural Information Processing Systems 30 (NIPS 2017)}; Curran Associates: Red Hook, NY, USA, 2017; pp. 3146--3154.
 
 \bibitem{petropoulos2022}
 Petropoulos, F.; Apiletti, D.; Assimakopoulos, V.; Babai, M.Z.; Barrow, D.K.; Ben Taieb, S.; Bergmeir, C.; Bessa, R.J.; Bijak, J.; Boylan, J.E.; et al. Forecasting: Theory and practice. \textit{Int. J. Forecast.} \textbf{2022}, \textit{38}, 705--871.
