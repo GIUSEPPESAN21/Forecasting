@@ -375,8 +375,13 @@ verificación.
   con tasa de victoria de solo 45%, 25/56) tras poblar `mase_naive`/
   `mase_seasonal_naive` para las filas donde ganó el benchmark
   correspondiente.
-- **F45** — Ablación del filtro estructural: ver F33 /
-  `RESUMEN_EJECUCION_FASE12.md`.
+- **F45** — Ablación del filtro estructural (ver F33): 150 series
+  idénticas, `structural_filter=True/False`. MASE mediano 0.701 (on) vs.
+  0.715 (off); victoria vs. naive 63.3% vs. 62.7%. Respuesta a la pregunta
+  de investigación de la Introducción: el filtro aporta una mejora pequeña
+  pero consistente (~2% relativo); la mayor parte de la ventaja de la
+  herramienta sobre naive viene del resto del protocolo, no del filtro en
+  sí.
 - **F46** — "19.9%" aclarado como mediana de mejoras por serie; "12.5%"
   (mejora de medianas) como dato complementario explícito. Wilcoxon
   herramienta-vs-incumbente W=94.0 p=4.9e-6 agregado. "60%" vs. naive
