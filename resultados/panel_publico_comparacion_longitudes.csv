@@ -1,0 +1,4 @@
+﻿max_len,n_series,n_pares_validos,mase_ganador_mediana,mase_naive_mediana,tasa_victoria_vs_naive
+24,0,0,,,
+36,150,150,0.8203208071559807,0.8506820892092906,0.5
+48,150,150,0.7008087211708433,0.8294290513478858,0.6333333333333333

@@ -37,6 +37,13 @@ def main() -> int:
                   .format(path.name, length))
             continue
         df = pd.read_csv(path)
+        if "mase_ganador" not in df.columns or df.empty:
+            print("  [{}] 0 series con ganador -- longitud demasiado corta para el protocolo "
+                  "de tres bloques (ver estado/detalle en el CSV)".format(path.name))
+            rows.append({"max_len": length, "n_series": 0, "n_pares_validos": 0,
+                         "mase_ganador_mediana": float("nan"), "mase_naive_mediana": float("nan"),
+                         "tasa_victoria_vs_naive": float("nan")})
+            continue
         comp = df.dropna(subset=["mase_ganador", "mase_naive"])
         tasa = (comp["mase_ganador"] < comp["mase_naive"]).mean() if len(comp) else float("nan")
         rows.append({
