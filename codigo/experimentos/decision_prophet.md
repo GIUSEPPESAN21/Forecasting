@@ -37,7 +37,7 @@ Es, literalmente, un resultado inventado.
 Dos comparaciones, ambas ya ejecutables con el codigo de este refactor:
 
 - **`experiments/vs_incumbente.py`**: herramienta vs. metodo incumbente de
-  Tuboplex (promedio movil k=3) vs. naive. Es el resultado que sostiene la
+  la empresa de referencia (promedio movil k=3) vs. naive. Es el resultado que sostiene la
   afirmacion central del paper (Fase 4 / F09).
 - **`experiments/panel_publico.py`**: herramienta vs. naive/seasonal_naive
   sobre un panel de M3 mensual truncado a series cortas (Fase 8.2), con
