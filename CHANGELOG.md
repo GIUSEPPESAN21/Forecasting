@@ -133,7 +133,7 @@ resuelve y el archivo donde vive la corrección.
 ### Fase 4 — Línea base
 - **F09** — `codigo/experimentos/vs_incumbente.py`: comparación herramienta vs.
   método incumbente (promedio móvil k=3) vs. naive. Parametrizado para
-  aceptar el Excel real de Tuboplex (`--input`); corre sobre un dataset
+  aceptar el Excel real de la empresa de referencia (`--input`); corre sobre un dataset
   sintético equivalente mientras esos datos no estén disponibles (ver
   limitación en el manuscrito, Sección 2.8). **Corrección post-hoc**: el
   mismo sesgo circular de 8.2, más un error de escala (el MASE del ganador se
@@ -344,7 +344,7 @@ hallazgo con su cifra antes/después.
   Resultados/Discusión/Conclusiones/GenAI/disponibilidad de datos/nota de
   bibliografía.
 - **F41** — Título reutilizado de la decisión previa del usuario. 0
-  ocurrencias de "Tuboplex" en el `.tex` (`grep -ic` verificado).
+  ocurrencias del nombre real de la empresa en el `.tex` (`grep -ic` verificado).
   Introducida una sola vez como "a plastics manufacturing company
   (hereafter, the reference company)". Abstract reescrito, 200 palabras
   exactas (`wc -w` verificado sobre el bloque `\abstract{}`), sin prometer

@@ -17,7 +17,7 @@ de estado: `Corregido y verificado` / `Corregido, pendiente de dato externo`
 | F06 | Error Medio (ME) declarado, nunca implementado | **Corregido y verificado** | `codigo/forecasting_core/metrics.py::me`; `codigo/tests/test_metrics.py` |
 | F07 | `template.tex` no compila, texto de plantilla, declaraciones vacías | **Corregido y verificado*** | `manuscritos/articulo_mdpi/template.tex` reescrito; ver nota de compilación abajo |
 | F08 | Sección "Comparison with Prophet" sin protocolo, datos ni código | **Decisión de diseño aplicada: retirada y reemplazada** | `codigo/experimentos/decision_prophet.md`; manuscrito Sección 3.6 (comparación contra AutoARIMA/ETS/Theta) |
-| F09 | Afirmación central sin línea base (mejora vs. incumbente) | **Corregido, pendiente de dato externo** | `codigo/experimentos/vs_incumbente.py` — corre sobre dataset sintético; acepta `--input` con el Excel real de Tuboplex cuando esté disponible |
+| F09 | Afirmación central sin línea base (mejora vs. incumbente) | **Corregido, pendiente de dato externo** | `codigo/experimentos/vs_incumbente.py` — corre sobre dataset sintético; acepta `--input` con el Excel real de la empresa de referencia cuando esté disponible |
 | F10 | `\|ACF(12)\|>0.30` sin desestacionalizar (falsos positivos por tendencia) | **Corregido y verificado** | `codigo/forecasting_core/classification.py::seasonality_test` (STL + Kruskal-Wallis); Monte Carlo: 50.2%→1.4% medio |
 | F11 | Test de tendencia no robusto a autocorrelación; ADF mal especificado | **Corregido y verificado** | `codigo/forecasting_core/classification.py::trend_test` (procedimiento secuencial ADF→GLSAR/deriva); Monte Carlo: 74.4%→8.9% medio |
 | F12 | MAPE explota con demanda cero; sin naive/seasonal_naive; sin MASE | **Corregido y verificado** | `codigo/forecasting_core/metrics.py` (MASE primaria, MAPE excluye ceros); `MODEL_REGISTRY` incluye `naive`/`seasonal_naive` obligatorios |
@@ -99,7 +99,7 @@ transparencia que el resto de este refactor exige.
   (`TESIS!.docx`) ni del PDF de la plantilla original — ambos son documentos
   separados del código y del manuscrito `.tex`; solo el manuscrito publicado
   (`manuscritos/articulo_mdpi/template.tex`) está dentro del alcance de este repositorio.
-- No se validó contra los datos reales de Tuboplex (no disponibles en este
+- No se validó contra los datos reales de la empresa de referencia (no disponibles en este
   entorno). `codigo/experimentos/vs_incumbente.py --input <archivo>` es la ruta
   directa para hacerlo cuando el archivo esté disponible.
 - No se compiló el manuscrito a PDF (sin distribución LaTeX en este entorno;
