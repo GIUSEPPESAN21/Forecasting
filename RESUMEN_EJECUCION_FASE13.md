@@ -4,9 +4,9 @@
 
 Una auditoría independiente posterior a la Fase 12 confirmó que el código
 funcional está correcto y que `manuscritos/articulo_mdpi/template.tex` ya
-está anonimizado (`grep -ic "tuboplex" template.tex` = 0). Sin embargo, esa
-auditoría encontró que el **repositorio público** seguía conteniendo el
-nombre real de la empresa ("Tuboplex") en 13 archivos. Esto es grave porque
+está anonimizado (`grep -ic <nombre-real-de-la-empresa> template.tex` = 0).
+Sin embargo, esa auditoría encontró que el **repositorio público** seguía
+conteniendo el nombre real de la empresa en 13 archivos. Esto es grave porque
 el Data Availability Statement del manuscrito remite directamente a la URL
 pública de este repositorio, así que cualquier revisor que abra ese enlace
 ve el nombre real pese a que el `.tex` está anonimizado. Esta fase cierra
@@ -14,10 +14,12 @@ esa fuga.
 
 ## Paso 0 — Diagnóstico
 
-Comando ejecutado:
+Comando ejecutado (`<nombre-real-de-la-empresa>` es un marcador de posición
+por el nombre real de la empresa, para no reintroducir la fuga dentro de
+este mismo documento):
 
 ```
-grep -rli "tuboplex" --include="*" . | grep -v "^./.git/" | grep -v "__pycache__"
+grep -rli <nombre-real-de-la-empresa> --include="*" . | grep -v "^./.git/" | grep -v "__pycache__"
 ```
 
 Resultado (13 archivos, coincide exactamente con la lista del prompt de
@@ -69,13 +71,15 @@ notebooks, ni configuración).
   navegador). Se verificó que no había anclas de enlace internas (`#...`)
   apuntando a los títulos modificados, salvo en `README.md` donde sí había
   una (`↑ Volver al inicio`), que se actualizó junto con el título.
-- **Tipo a**: reemplazo narrativo estándar "Tuboplex" → "la empresa de
-  referencia" (todo el contexto es español en estos 13 archivos; no hubo
-  contexto en inglés fuera de `template.tex`, que no se tocó).
+- **Tipo a**: reemplazo narrativo estándar del nombre real de la empresa
+  por "la empresa de referencia" (todo el contexto es español en estos 13
+  archivos; no hubo contexto en inglés fuera de `template.tex`, que no se
+  tocó).
 - **CHANGELOG.md / RESUMEN_EJECUCION_FASE12.md — caso especial**: tres
-  líneas citan literalmente el comando `grep -ic "tuboplex"` que se corrió
-  en la Fase 12 para verificar la anonimización del `.tex`. Reemplazar
-  "Tuboplex" por "la empresa de referencia" ahí habría sido engañoso (el
+  líneas citan literalmente el comando `grep -ic` con el nombre real de la
+  empresa que se corrió en la Fase 12 para verificar la anonimización del
+  `.tex`. Reemplazar el nombre real por "la empresa de referencia" ahí
+  habría sido engañoso (el
   comando real que se corrió en su momento buscaba el nombre real, no la
   frase de reemplazo). Se reformularon como `` `grep -ic` del nombre real
   de la empresa `` (sin nombrarla), preservando el significado histórico
@@ -117,13 +121,13 @@ necesario descartar ni restaurar nada.
 
 ## Paso 2 — Verificación
 
-**Check 1** — `grep -rli "tuboplex" --include="*" . | grep -v "^./.git/" | grep -v "__pycache__"`
+**Check 1** — `grep -rli <nombre-real-de-la-empresa> --include="*" . | grep -v "^./.git/" | grep -v "__pycache__"`
 
 ```
 (sin salida — vacío)
 ```
 
-**Check 2** — `grep -ic "tuboplex" manuscritos/articulo_mdpi/template.tex`
+**Check 2** — `grep -ic <nombre-real-de-la-empresa> manuscritos/articulo_mdpi/template.tex`
 
 ```
 0
