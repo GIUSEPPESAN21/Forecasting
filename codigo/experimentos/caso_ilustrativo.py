@@ -2,11 +2,11 @@
 
 Genera UNA serie sintetica determinista (semilla fija) con tendencia y
 estacionalidad moderadas -reproduciendo la variabilidad y los cambios de nivel
-que la tesis documenta para las series de Tuboplex- y ejecuta el pipeline
+que la tesis documenta para las series de la empresa de referencia- y ejecuta el pipeline
 completo, imprimiendo cada numero que el manuscrito cita en la Seccion 3.2.
 
 Se usa una serie sintetica, NO datos reales de la empresa, porque el archivo
-real de Tuboplex no esta disponible en este repositorio (ver Data Availability
+real de la empresa de referencia no esta disponible en este repositorio (ver Data Availability
 en el manuscrito). Todo numero impreso aqui es exactamente el que el usuario
 obtendria ejecutando este script; no hay ninguna cifra en el manuscrito que no
 provenga de una ejecucion real de este codigo.

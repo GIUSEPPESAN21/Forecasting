@@ -1,4 +1,4 @@
-"""Herramienta vs. metodo incumbente de Tuboplex (Fase 4 / F09).
+"""Herramienta vs. metodo incumbente de la empresa de referencia (Fase 4 / F09).
 
 Este es el experimento que faltaba y que sostiene la afirmacion central del
 manuscrito ("la herramienta mejora significativamente la precision"). El
@@ -31,7 +31,7 @@ la correcta.
 
 Uso
 ---
-Con el archivo real de Tuboplex (columnas year, month, demand; sku opcional):
+Con el archivo real de la empresa de referencia (columnas year, month, demand; sku opcional):
 
     python experiments/vs_incumbente.py --input ruta/al/archivo.xlsx
     python experiments/vs_incumbente.py --input ruta/al/archivo.xlsx --sku "TUBERIA CONDUIT..."
@@ -333,7 +333,7 @@ def run(panel: pd.DataFrame, m: int, label: str) -> pd.DataFrame:
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--input", type=str, default=None,
-                    help="Ruta al Excel/CSV real de Tuboplex (columnas year, month, demand[, sku])")
+                    help="Ruta al Excel/CSV real de la empresa de referencia (columnas year, month, demand[, sku])")
     ap.add_argument("--sku", type=str, default=None, help="Filtrar a un solo producto")
     ap.add_argument("--synthetic", action="store_true",
                     help="Usar dataset sintetico (estructura de la tesis) en vez de datos reales")
@@ -354,13 +354,13 @@ def main() -> int:
             "month": [m for m in res.series.dropna().index.strftime("%B")],
             "demand": res.series.dropna().to_numpy(),
         })
-        run(panel, args.m, "datos reales de Tuboplex")
+        run(panel, args.m, "datos reales de la empresa de referencia")
         return 0
 
     print("SIN Excel real: usando dataset sintetico que reproduce la estructura de la\n"
           "tesis (24-36 meses, series de proyectos de obra, picos, cambios abruptos).\n"
           "Este resultado verifica el pipeline de punta a punta; NO reemplaza la\n"
-          "corrida sobre los datos reales de Tuboplex, que sigue pendiente.\n")
+          "corrida sobre los datos reales de la empresa de referencia, que sigue pendiente.\n")
     panel = make_synthetic_panel(args.n_series, args.seed)
     run(panel, args.m, "dataset sintetico (pendiente de datos reales)")
     return 0

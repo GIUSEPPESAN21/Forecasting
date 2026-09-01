@@ -28,7 +28,7 @@ Protocolo aqui (unico, honesto, identico para los tres metodos)
    explicita: sin tuning agresivo, son lineas base de comparacion). Se
    evaluan por backtest de un paso directamente sobre el MISMO bloque EXTERNO
    que uso la Herramienta -exactamente el mismo patron que ya usa
-   `vs_incumbente.py` para el metodo incumbente de Tuboplex (que tampoco se
+   `vs_incumbente.py` para el metodo incumbente de la empresa de referencia (que tampoco se
    tunea sobre ese bloque).
 3. Las cuatro metricas (MASE, MAPE, MAD, MSE, ME) se calculan con
    `forecasting_core.metrics.compute_metrics`, con el MISMO `scale_train` y
