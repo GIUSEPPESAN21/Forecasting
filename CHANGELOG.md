@@ -445,3 +445,60 @@ verificación.
   Deutsche Bundesbank Discussion Paper 2020). Agregadas 2 referencias
   nuevas para F42: `taylorletham2018` (Prophet, Am. Stat. 2018, 72, 37–45)
   y `garza2022mlforecast` (mlforecast, Nixtla).
+
+## Fase 13 — Anonimización repo-wide (2026-09-01)
+
+Una auditoría independiente posterior a la Fase 12 confirmó que
+`manuscritos/articulo_mdpi/template.tex` ya estaba anonimizado, pero que el
+nombre real de la empresa ("Tuboplex") seguía presente en 13 archivos del
+repositorio público al que remite el Data Availability Statement del
+manuscrito. Esta fase cierra esa fuga. Cambio puramente textual: ninguna
+línea de lógica de negocio, algoritmos o datos numéricos fue modificada.
+
+- **README.md** (tipo b + a): título anonimizado (título de documento,
+  como `app.title`); referencias narrativas restantes reemplazadas por
+  "la empresa de referencia"; ancla del enlace "Volver al inicio" ajustada
+  al nuevo título.
+- **codigo/app.py** (tipo b): comentario de cabecera y `app.title`
+  ("Motor de Pronosticos - Tuboplex" → "Motor de Pronosticos"): referencia a
+  la empresa eliminada, no reemplazada por una frase larga (título de
+  pestaña del navegador).
+- **docs/MANUAL_USUARIO.md** (tipo b): título del documento anonimizado.
+- **codigo/experimentos/caso_ilustrativo.py** (tipo a): dos referencias en
+  docstring reemplazadas.
+- **codigo/experimentos/comparativa_externa.py** (tipo a): una referencia en
+  comentario reemplazada.
+- **codigo/experimentos/decision_prophet.md** (tipo a): una referencia
+  narrativa reemplazada.
+- **codigo/experimentos/vs_incumbente.py** (tipo a): cinco referencias
+  (docstring, help de `--input`, mensajes impresos) reemplazadas.
+- **resultados/logs/vs_incumbente.log** (tipo c): regenerado corriendo
+  `vs_incumbente.py --synthetic --n-series 40 --seed 20260824` (mismos
+  parámetros citados en la Tabla~\ref{tab:incumbente} del manuscrito) en vez
+  de editado a mano. Todas las cifras citadas en el manuscrito se verificaron
+  idénticas antes/después (MASE 0.922/0.949/0.807, MAPE 14.4/11.4/10.1,
+  |ME| 217.1/55.4/111.9, 80%, 24/10/6, mejora +19.9%/+12.5%, Wilcoxon
+  W=94.0 p=4.93e-06 n=40); `resultados/vs_incumbente.csv` y
+  `vs_incumbente_resumen.csv` no cambiaron (sin diff tras la corrida).
+- **docs/prompt_maestro.md** (tipo a): seis referencias (título del
+  documento y cinco en prosa) reemplazadas.
+- **docs/prompt_maestro_fase11.md** (tipo a): una referencia reemplazada.
+- **RESUMEN_EJECUCION.md** (tipo a): dos referencias reemplazadas.
+- **CHANGELOG.md** (tipo a): una referencia narrativa (entrada F09)
+  reemplazada; una referencia dentro de un comando `grep -ic` citado en la
+  entrada F41 reformulada sin nombrar la empresa, preservando el
+  significado histórico del check (0 ocurrencias) sin reintroducir la fuga.
+- **RESUMEN_EJECUCION_FASE12.md** (tipo a): dos referencias dentro de
+  comandos `grep -ic` citados (entradas F40/F41) reformuladas de la misma
+  manera que en CHANGELOG.md.
+
+Verificación (ver `RESUMEN_EJECUCION_FASE13.md` para la salida completa de
+cada comando): `grep -rli "tuboplex" .` → vacío; `grep -ic "tuboplex"
+template.tex` → 0 (sin cambios); `pytest codigo/tests -q` → 276 tests, 0
+fallos, 0 errores (el conteo de skipped difiere del de la auditoría por
+disponibilidad de paquetes opcionales — prophet/mlforecast/lightgbm — en
+este entorno, no por los cambios de esta fase).
+
+git history nota: el nombre real de la empresa sigue presente en commits
+anteriores a esta fase. Reescribir el historial de git está fuera de
+alcance de esta fase (ver discusión en `RESUMEN_EJECUCION_FASE13.md`).
