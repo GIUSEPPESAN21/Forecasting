@@ -46,7 +46,7 @@ y F34 (3).
 | F42 | Sección 3.6: comparación externa Prophet/LightGBM | **Corregido y verificado** | `resultados/comparativa_externa.csv` (preexistente, no afectado por la Parte A): herramienta 0.747, Prophet 0.785, LightGBM 0.893, naive 1.070 mediano global (n=50); 64%/72% victoria; LightGBM gana en n=24 (0.798 vs. 0.909) y n=120 (0.388); versiones Prophet 1.4.0/LightGBM 4.7.0/mlforecast 1.1.0 verificadas por import |
 | F43 | Figura 2 y párrafo de intervalos (depende de F31) | **Corregido y verificado** | Rerun de `caso_ilustrativo.py` y `make_figures.py`: sigma 360→1248 monótono, banda visualmente monótona; texto ya no dice "widens sharply after month 9" |
 | F44 | Hallazgos de Wilcoxon (depende de F32) | **Corregido y verificado** | 95/17/38 (63%/11%/25%), W=2127.0 p<0.001 n=133; régimen "flat" (56 series): mediana del ganador 0.781 vs. naive 0.783 (marginalmente mejor, no peor como en la corrida con el bug) pero tasa de victoria de solo 45% (25/56); régimen "trend, no seasonality": 57% (24/42) |
-| F45 | Resultado de la ablación del filtro estructural (depende de F33) | **Pendiente de dato externo** — script corriendo al momento de escribir este resumen (`codigo/experimentos/ablacion_filtro_estructural.py --n-series 150 --max-len 48 --seed 20260824`, ~2x el costo de un panel simple); actualizar esta fila y el §3.7 del manuscrito con el resultado real en cuanto termine | `resultados/ablacion_filtro_estructural_resumen.csv` |
+| F45 | Resultado de la ablación del filtro estructural (depende de F33) | **Corregido y verificado** | 150 series idénticas: MASE mediano 0.701 (filtro on) vs. 0.715 (filtro off); tasa de victoria vs. naive 63.3% vs. 62.7%. El filtro aporta una mejora pequeña pero consistente (~2% relativo); la mayor parte de la ventaja viene del resto del protocolo. `resultados/ablacion_filtro_estructural_resumen.csv` |
 | F46 | Cifra "19.9%" y Wilcoxon herramienta-vs-incumbente (depende de F34) | **Corregido y verificado** | "19.9%" = mediana de mejoras por serie; "12.5%" = mejora de medianas (dato complementario); Wilcoxon W=94.0 p=4.9e-6; WTL vs. naive 24/10/6 (no solo "60%") |
 | F47 | Definición de MASE sin ambigüedad (depende de F35) | **Corregido y verificado** | Ecuación 1 y texto circundante alineados con el docstring de `mase()`: denominador sobre el bloque de entrenamiento, m=12/1 según estacionalidad confirmada |
 | F48 | Bloque externo de 6 orígenes (depende de F39) | **Pendiente de dato externo** — script aún no ejecutado (se ejecutará tras F45 por presupuesto de memoria de la máquina, 8GB); actualizar esta fila y §3.7/§3.5 del manuscrito con el resultado real | `resultados/sensibilidad_outer_block.csv` |
@@ -81,7 +81,7 @@ y F34 (3).
 | `vs_incumbente.py --synthetic --n-series 40` | MASE mediano: incumbente=0.922, naive=0.949, herramienta=0.807; mejora mediana por serie +19.9%, mejora de medianas +12.5%; WTL vs. naive 24/10/6; Wilcoxon vs. incumbente W=94.0 p=4.93e-6 |
 | `comparativa_externa.csv` (preexistente, 50 series, 24–180 obs) | MASE mediano: herramienta=0.747, Prophet=0.785, LightGBM=0.893, naive=1.070; herramienta gana a Prophet 64%, a LightGBM 72%; LightGBM gana en n=24 (0.798) y n=120 (0.388) |
 | `montecarlo_clasificacion.csv` (preexistente, sin cambio de lógica) | FP tendencia: media 8.9% (máx 15.8%); FP estacionalidad: media 1.4% (máx 3.5%); potencia de tendencia n=24: 42.7%/44.2%/0% (lineal/deriva/tendencia+estacional) |
-| `ablacion_filtro_estructural.py` | **pendiente** — actualizar al terminar |
+| `ablacion_filtro_estructural.py` (150 series, ambos modos) | MASE mediano: 0.701 (filtro on) vs. 0.715 (filtro off); victoria vs. naive: 63.3% vs. 62.7% |
 | `sensibilidad_outer_block.py` | **pendiente** — actualizar al terminar |
 | `benchmark_tiempos.py` | sin cambios respecto a la Fase 7 (no reejecutado; SD alta en n=96 documentada como limitación de la medición) |
 
@@ -127,15 +127,16 @@ y F34 (3).
 
 ## Pendiente al momento de escribir este resumen
 
-- **F45/F48**: `ablacion_filtro_estructural.py` corriendo (150 series × 2
-  configuraciones); `sensibilidad_outer_block.py` sin correr aún (se
-  ejecutará a continuación). Ambos son scripts nuevos y ya probados
-  (`test_ablacion_filtro_estructural.py`); solo falta que la corrida larga
-  termine para citar el resultado real en el §3.7 del manuscrito y en este
-  resumen. **No se ha escrito ningún número para estos dos hallazgos en el
-  manuscrito** — la Sección 3.7 los describe metodológicamente sin
-  adelantar una cifra, exactamente para no violar la regla de "nunca un
-  número que no se pueda señalar en un CSV real".
+- **F45**: completado — ver tabla arriba y §3.7/Discusión del manuscrito.
+- **F48**: `sensibilidad_outer_block.py` corriendo al momento de escribir
+  esta actualización (150 series × 3 valores de `outer_block`, más costoso
+  que la ablación). El script ya está probado (reutiliza `evaluate_one` de
+  `panel_publico.py`, cubierto indirectamente por sus pruebas). **No se ha
+  escrito ningún número para F48 en el manuscrito todavía** — la Sección
+  3.7 lo describe metodológicamente sin adelantar una cifra, exactamente
+  para no violar la regla de "nunca un número que no se pueda señalar en
+  un CSV real". Se actualizará esta fila y el §3.5/§3.7 del manuscrito en
+  cuanto termine.
 - **F52 (benchmark de tiempos)**: no se reejecutó `benchmark_tiempos.py
   --reps 10` por presupuesto de tiempo de esta sesión (máquina de 8GB con
   varias corridas largas ya encoladas); documentado como limitación
