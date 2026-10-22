@@ -62,9 +62,9 @@ COLOR_LIGHTGBM = "#6A3D9A"
 COLOR_NAIVE = "#8C8C8C"
 
 METHOD_STYLE = {
-    "herramienta": ("Herramienta (ganador honesto)", COLOR_HERRAMIENTA),
+    "herramienta": ("Tool (selected method)", COLOR_HERRAMIENTA),
     "naive": ("Naive", COLOR_NAIVE),
-    "seasonal_naive": ("Naive estacional", "#B0A000"),
+    "seasonal_naive": ("Seasonal naive", "#B0A000"),
     "prophet": ("Prophet", COLOR_PROPHET),
     "lightgbm": ("LightGBM (mlforecast)", COLOR_LIGHTGBM),
 }
@@ -102,7 +102,7 @@ def fig_c1_boxplot_mase(df: pd.DataFrame):
     labels = [METHOD_STYLE[m][0] for m in present_methods]
     colors = [METHOD_STYLE[m][1] for m in present_methods]
 
-    bp = ax.boxplot(data, labels=labels, patch_artist=True, showmeans=True,
+    bp = ax.boxplot(data, tick_labels=labels, patch_artist=True, showmeans=True,
                     meanprops=dict(marker="D", markerfacecolor="white", markeredgecolor="black",
                                    markersize=5),
                     medianprops=dict(color="black", linewidth=1.4))
@@ -111,12 +111,12 @@ def fig_c1_boxplot_mase(df: pd.DataFrame):
         patch.set_alpha(0.35)
         patch.set_edgecolor(c)
     ax.axhline(1.0, color="red", ls="--", lw=1, alpha=0.6)
-    ax.annotate("MASE=1 (empata con el naive estacional in-sample)", xy=(0.985, 1.0),
+    ax.annotate("MASE = 1 (parity with in-sample seasonal naive)", xy=(0.985, 1.0),
                xycoords=("axes fraction", "data"), ha="right", va="bottom",
                fontsize=7.5, color="red")
-    ax.set_ylabel("MASE (bloque externo, protocolo honesto)")
-    ax.set_title("Distribucion de MASE por metodo — {} series sinteticas\n"
-                 "({} longitudes x {} regimenes estructurales)".format(
+    ax.set_ylabel("MASE (held-out outer block)")
+    ax.set_title("Distribution of MASE by method: {} synthetic series\n"
+                 "({} series lengths x {} structural regimes)".format(
                      len(df), df["n"].nunique(), df["regimen"].nunique()),
                fontsize=9.6)
     plt.setp(ax.get_xticklabels(), rotation=12, ha="right", fontsize=8.6)
@@ -139,13 +139,13 @@ def fig_c2_mase_vs_longitud(df: pd.DataFrame):
         ax.scatter(sub["n"], sub["mase"], color=color, alpha=0.35, s=26, zorder=2)
         agg = sub.groupby("n")["mase"].median().reset_index()
         ax.plot(agg["n"], agg["mase"], "-o", color=color, lw=1.8, ms=5,
-               label="{} (mediana por n)".format(label), zorder=3)
+               label="{} (median per n)".format(label), zorder=3)
 
     ax.axhline(1.0, color="red", ls="--", lw=1, alpha=0.5)
-    ax.set_xlabel("Longitud de la serie (observaciones mensuales)")
-    ax.set_ylabel("MASE (bloque externo)")
-    ax.set_title("Precision vs. longitud de serie por metodo\n"
-                 "(puntos: series individuales; linea: mediana por longitud)", fontsize=9.6)
+    ax.set_xlabel("Series length (monthly observations)")
+    ax.set_ylabel("MASE (held-out outer block)")
+    ax.set_title("Accuracy vs. series length by method\n"
+                 "(points: individual series; line: median per length)", fontsize=9.6)
     ax.legend(fontsize=8, loc="upper right", framealpha=0.9)
     fig.tight_layout()
     fig.savefig(OUT / "fig_c2_mase_vs_longitud.png", bbox_inches="tight")
@@ -192,11 +192,10 @@ def fig_c3_panel_regimenes(seed: int = 20260824, h: int = 12):
         return
 
     regimenes = [
-        (24, "corta_erratica", "Corto y erratico (n=24, el caso que rompio a\n"
-                                "Prophet mal configurado en el PDF de los tutores)"),
-        (48, "tendencia", "Tendencia (n=48)"),
-        (48, "estacional", "Estacional (n=48)"),
-        (60, "tendencia_estacional", "Tendencia + estacionalidad (n=60)"),
+        (24, "corta_erratica", "Short and erratic (n=24)"),
+        (48, "tendencia", "Trend (n=48)"),
+        (48, "estacional", "Seasonal (n=48)"),
+        (60, "tendencia_estacional", "Trend + seasonality (n=60)"),
     ]
 
     fig, axes = plt.subplots(2, 2, figsize=(12.5, 8.6))
@@ -205,7 +204,7 @@ def fig_c3_panel_regimenes(seed: int = 20260824, h: int = 12):
         forecasts = _fit_full_history_forecasts(s, h, specs)
 
         ax.plot(s.index, s.values, "-o", color=COLOR_HISTORICO, ms=3, lw=1.2,
-               label="Historico", zorder=2)
+               label="Historical demand", zorder=2)
         future_idx = pd.date_range(s.index[-1] + pd.offsets.MonthBegin(1), periods=h, freq="MS")
         ax.axvline(s.index[-1], color="gray", ls=":", lw=1)
 
@@ -223,9 +222,8 @@ def fig_c3_panel_regimenes(seed: int = 20260824, h: int = 12):
         ax.legend(fontsize=6.6, loc="upper left", framealpha=0.9)
 
     fig.suptitle(
-        "Historico + pronostico a {} meses: Herramienta vs. Prophet vs. LightGBM\n"
-        "(pronostico ilustrativo con historia completa; el desempeño honesto por "
-        "regimen esta en fig_c1/fig_c2)".format(h),
+        "Historical demand and {}-month forecast: tool vs. Prophet vs. LightGBM\n"
+        "(illustrative full-history forecasts; held-out performance is reported in Figures 4 and 5)".format(h),
         fontsize=10.5,
     )
     fig.tight_layout(rect=(0, 0, 1, 0.94))

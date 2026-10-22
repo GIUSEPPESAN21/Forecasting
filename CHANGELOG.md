@@ -5,6 +5,13 @@ fusiona dos auditorías independientes (25 hallazgos, tabla de referencia
 cruzada en el prompt original). Cada entrada cita el ID de hallazgo que
 resuelve y el archivo donde vive la corrección.
 
+## [2.1.0] — 2026-10-22 — Journal submission (MDPI *Forecasting*)
+
+- `manuscritos/articulo_mdpi/template.tex` now holds the **submitted** manuscript: author order (J.J. Sánchez Acuña first; A.X. Rodríguez, Tecnológico de Monterrey, as corresponding author), 10 keywords, and layout fixes so that the PDF compiles to 27 pages without undefined references.
+- Figures 4–6 (`fig_c1_boxplot_mase.png`, `fig_c2_mase_vs_longitud.png`, `fig_c3_panel_regimenes.png`) regenerated with English labels from `resultados/comparativa_externa.csv` (same seed, same values; only text changed). `codigo/experimentos/make_figures_comparativa.py` updated accordingly. `fig2_forecast_caso.png` and `flowchart_tool.png` replaced by the versions used in the submission.
+- New folder `manuscritos/envio_MDPI/`: Word version on the official MDPI template, compiled PDF, cover letter, graphical abstract.
+- README: submission note added; test count corrected from 266 to 276 (verified with `pytest codigo/tests --collect-only`), matching the manuscript and the cover letter.
+
 ## [2.0.0] — 2026-08-24
 
 ### Fase 0 — Arquitectura
