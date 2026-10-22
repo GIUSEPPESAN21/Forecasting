@@ -2,7 +2,7 @@
 
 Archivo SEPARADO de `make_figures.py` a proposito: `make_figures.py` produce
 las figuras del manuscrito original (Fases 1-9) y no se toca en esta fase
-(restriccion de aislamiento, ver `docs/prompt_maestro.md` de la Fase 11).
+(restriccion de aislamiento, ver `CHANGELOG.md`, Fase 11).
 Este script solo LEE `resultados/comparativa_externa.csv` (generado por
 `comparativa_externa.py`) y regenera un puñado de series representativas
 para las figuras que necesitan la trayectoria completa del pronostico, no

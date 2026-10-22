@@ -4,7 +4,7 @@
 
 Este manual explica cómo instalar y usar la herramienta **sin necesidad de
 leer el código**. Si busca el detalle técnico de qué se corrigió y por qué,
-vea [`CHANGELOG.md`](../CHANGELOG.md) y [`RESUMEN_EJECUCION.md`](../RESUMEN_EJECUCION.md);
+vea [`CHANGELOG.md`](../CHANGELOG.md);
 este documento es solo para usar la aplicación.
 
 ## Índice
@@ -271,7 +271,7 @@ historia). El motivo exacto siempre se muestra junto al método.
 comparar contra Prophet/LightGBM (ver la sección del Módulo 5 arriba).
 
 **Quiero entender qué corrige esta versión de la herramienta frente a la
-original** — Ese es el contenido de `CHANGELOG.md` y `RESUMEN_EJECUCION.md`
+original** — Ese es el contenido de `CHANGELOG.md`
 en la raíz del repositorio; este manual solo cubre el uso de la aplicación.
 
 **Quiero reproducir las cifras del manuscrito académico** — Vea la sección

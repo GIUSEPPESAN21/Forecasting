@@ -5,6 +5,10 @@ fusiona dos auditorías independientes (25 hallazgos, tabla de referencia
 cruzada en el prompt original). Cada entrada cita el ID de hallazgo que
 resuelve y el archivo donde vive la corrección.
 
+> Nota: los documentos internos de proceso mencionados en entradas antiguas
+> (`prompt_maestro*.md`, `RESUMEN_EJECUCION*.md`) ya no se distribuyen en la
+> rama principal; el CHANGELOG conserva el detalle relevante.
+
 ## [2.1.0] — 2026-10-22 — Journal submission (MDPI *Forecasting*)
 
 - `manuscritos/articulo_mdpi/template.tex` now holds the **submitted** manuscript: author order (J.J. Sánchez Acuña first; A.X. Rodríguez, Tecnológico de Monterrey, as corresponding author), 10 keywords, and layout fixes so that the PDF compiles to 27 pages without undefined references.

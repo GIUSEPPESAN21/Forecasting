@@ -35,10 +35,10 @@ derivada, y comparación opcional contra Prophet y LightGBM.
 
 ---
 
-Este repositorio es un refactor completo de una versión previa que contenía
-defectos estadísticos que invalidaban sus propios resultados publicados — ver
-[`CHANGELOG.md`](CHANGELOG.md) y [`RESUMEN_EJECUCION.md`](RESUMEN_EJECUCION.md)
-para el detalle hallazgo por hallazgo. El núcleo de pronóstico
+Este repositorio es la implementación de referencia de la herramienta descrita
+en el manuscrito (ver la sección *Journal submission* más abajo); el
+[`CHANGELOG.md`](CHANGELOG.md) documenta las correcciones de validación
+estadística incorporadas. El núcleo de pronóstico
 (`codigo/forecasting_core/`) no depende de Dash ni de Plotly y es testeable de
 forma independiente; toda la interfaz interactiva es una capa delgada sobre él.
 
@@ -165,19 +165,15 @@ resultados/                    Evidencia versionada: CSV y logs de cada corrida 
 
 manuscritos/
   articulo_mdpi/                  Manuscrito LaTeX (MDPI, journal Forecasting) y figuras
-  tesis_original/                 Documento de tesis original (Universidad de los Andes)
 
 docs/                           Documentación de proceso y de uso
   MANUAL_USUARIO.md               Manual de uso completo — instalación a exportación
-  prompt_maestro.md               Instrucción original, Fases 0-10 (F01-F25)
-  prompt_maestro_fase11.md        Instrucción original, Fase 11 (F26-F29)
   comparacion_herramientas.pdf    PDF de los tutores que originó la Fase 11 (F26)
   auditoria_inicial.md            Auditoría que originó el refactor completo
 
 requirements.txt                 Instalación mínima (núcleo + app)
 requirements-external.txt        Opcional: Prophet + LightGBM (ver Módulo 5)
 CHANGELOG.md                     Cada corrección, citada por ID de hallazgo (F01-F29)
-RESUMEN_EJECUCION.md             Estado final de cada hallazgo, con evidencia
 ```
 
 <p align="right"><a href="#índice">↑ Índice</a></p>

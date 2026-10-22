@@ -9,7 +9,7 @@ competencia M5, usado como modelo GLOBAL via `mlforecast`). Adjuntaron un PDF
 Prophet" sobre series de 24 a 180 meses.
 
 Ese PDF no es reutilizable como evidencia (hallazgo F26, documentado en
-`docs/prompt_maestro.md` de la Fase 11): mezcla el MAPE walk-forward interno
+`CHANGELOG.md`, Fase 11): mezcla el MAPE walk-forward interno
 de la Herramienta con las metricas de Prophet calculadas sobre un holdout
 aparte, con `yearly_seasonality` de Prophet activada de forma incondicional
 incluso en la serie de 24 observaciones (2 ciclos anuales exactos, el minimo
@@ -17,7 +17,7 @@ teorico) -de ahi el MAPE=353.98% y los pronosticos negativos que reporta ese
 documento para n=24. Comparar un numero calculado dentro de la seleccion del
 modelo contra un numero calculado fuera de ella no es una comparacion valida;
 es la misma clase de sesgo de circularidad que `honest_outer_estimate()` ya
-corrige para la Herramienta (ver `RESUMEN_EJECUCION.md`, "Correccion post-hoc").
+corrige para la Herramienta (ver `CHANGELOG.md`).
 
 Protocolo aqui (unico, honesto, identico para los tres metodos)
 ------------------------------------------------------------------
