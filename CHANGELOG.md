@@ -22,7 +22,7 @@ resuelve y el archivo donde vive la corrección.
 - Se creó `codigo/forecasting_core/`, paquete puro sin dependencias de Dash/Plotly,
   testeable de forma independiente. `codigo/app.py` pasó a ser una capa delgada que
   solo construye el layout y conecta callbacks.
-- `tesisVF.py` (eliminado del arbol de trabajo tras el refactor; recuperable via `git show 63bf54e:tesisVF.py`) (1301 líneas, monolito Dash+lógica) queda sustituido por
+- `tesisVF.py` (eliminado del arbol de trabajo tras el refactor) (1301 líneas, monolito Dash+lógica) queda sustituido por
   `codigo/forecasting_core/` + `codigo/app.py`.
 
 ### Fase 1 — Núcleo estadístico
@@ -208,7 +208,7 @@ No reabre ni edita F01-F25; la única excepción declarada de antemano
 (hook en `optimize.py`) resultó innecesaria y se documenta por qué en
 `codigo/external_baselines/adapters.py`.
 
-- **F26** — `comparacion_herramientas.pdf` (adjunto por los tutores) mezclaba
+- **F26** — el PDF interno de comparaciones manuales (adjunto por los tutores) mezclaba
   el MAPE walk-forward interno de la Herramienta con métricas de Prophet
   sobre un holdout aparte, con `yearly_seasonality` de Prophet activada de
   forma incondicional incluso en n=24 (MAPE=353.98%, pronósticos negativos).

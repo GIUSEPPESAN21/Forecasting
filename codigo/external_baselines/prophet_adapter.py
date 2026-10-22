@@ -7,7 +7,7 @@ importarse (y sus tests puedan colectarse y saltarse con
 
 Sobre F26 (por qué `yearly_seasonality` no se activa siempre)
 ---------------------------------------------------------------
-El PDF `comparacion_herramientas.pdf` aportado por los tutores corrió Prophet
+El PDF interno de comparaciones manuales aportado por los tutores corrió Prophet
 con `yearly_seasonality` activada de forma incondicional, incluida la serie de
 n=24 observaciones (exactamente 2 ciclos anuales, el mínimo teórico para que
 un componente Fourier anual esté identificado). Resultado documentado ahí:

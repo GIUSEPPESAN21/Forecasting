@@ -72,7 +72,7 @@ el estandar que esta decision aplica a todo lo demas.
 Los tutores del proyecto pidieron explicitamente (25/08/2026) una comparacion
 cuantitativa contra Prophet y "otro pronosticador famoso" (se eligio
 LightGBM, ganador historico de la competencia M5, via `mlforecast`), con
-evidencia adjunta (`docs/comparacion_herramientas.pdf`) de que la comparacion
+evidencia adjunta (un PDF interno de corridas manuales, no distribuido) de que la comparacion
 manual existente mezclaba protocolos de evaluacion distintos (hallazgo F26).
 Esta actualizacion NO revierte la decision de arriba: los dos argumentos que
 retiraron Prophet del *manuscrito* siguen vigentes para la **aplicacion

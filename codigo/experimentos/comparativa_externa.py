@@ -5,7 +5,7 @@ Origen de este script
 Los tutores del proyecto pidieron una comparacion de la Herramienta contra
 Prophet y "otro pronosticador famoso" (aqui: LightGBM, ganador historico de la
 competencia M5, usado como modelo GLOBAL via `mlforecast`). Adjuntaron un PDF
-(`comparacion_herramientas.pdf`) con 10 corridas manuales de "Herramienta vs.
+(documento interno, no distribuido) con 10 corridas manuales de "Herramienta vs.
 Prophet" sobre series de 24 a 180 meses.
 
 Ese PDF no es reutilizable como evidencia (hallazgo F26, documentado en

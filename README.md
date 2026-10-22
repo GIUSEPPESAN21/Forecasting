@@ -168,8 +168,6 @@ manuscritos/
 
 docs/                           Documentación de proceso y de uso
   MANUAL_USUARIO.md               Manual de uso completo — instalación a exportación
-  comparacion_herramientas.pdf    PDF de los tutores que originó la Fase 11 (F26)
-  auditoria_inicial.md            Auditoría que originó el refactor completo
 
 requirements.txt                 Instalación mínima (núcleo + app)
 requirements-external.txt        Opcional: Prophet + LightGBM (ver Módulo 5)
